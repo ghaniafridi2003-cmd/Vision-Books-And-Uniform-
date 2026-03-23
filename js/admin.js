@@ -444,6 +444,44 @@ async function syncWithSupabase() {
   }
 }
 
+// Import local products to Supabase
+async function importProductsToSupabase() {
+  if (!confirm('This will upload all local products to Supabase. Continue?')) {
+    return;
+  }
+
+  try {
+    showToast('Importing products to Supabase...', 'info');
+    
+    // Get local products
+    const productsToImport = getAllProducts();
+    
+    if (productsToImport.length === 0) {
+      showToast('No products to import', 'warning');
+      return;
+    }
+
+    // Import each product
+    let imported = 0;
+    for (const product of productsToImport) {
+      try {
+        await upsertProduct(product);
+        imported++;
+      } catch (error) {
+        console.error(`Error importing product ${product.id}:`, error);
+      }
+    }
+
+    showToast(`Successfully imported ${imported}/${productsToImport.length} products!`, 'success');
+    
+    // Reload dashboard
+    await loadDashboardData();
+  } catch (error) {
+    showToast('Import failed. Check console for details.', 'error');
+    console.error('Import error:', error);
+  }
+}
+
 // Load settings
 function loadSettings() {
   document.getElementById('settingStoreName').textContent = CONFIG.store.name;
