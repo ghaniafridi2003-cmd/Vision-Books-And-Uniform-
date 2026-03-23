@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <base href="/Vision-Books-And-Uniform-/">
+  <base href="/vision-shop/">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Pakistan's premier online store for Books, Stationery, Gifts & School Uniforms. Quality products at affordable prices. Fast delivery across Pakistan.">
@@ -531,14 +531,16 @@
   </a>
 
   <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script src="js/config.js"></script>
+  <script src="js/supabase-client.js"></script>
   <script src="js/products.js"></script>
   <script src="js/cart.js"></script>
   <script src="js/wishlist.js"></script>
   <script src="js/utils.js"></script>
   <script>
     // Initialize homepage
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', async function() {
       // Update page with config data
       document.getElementById('storeName').textContent = CONFIG.store.name;
       document.getElementById('storeTagline').textContent = CONFIG.store.tagline;
@@ -563,10 +565,19 @@
       document.getElementById('whatsappLink').href = CONFIG.social.whatsapp;
       document.getElementById('whatsappFloatBtn').href = CONFIG.social.whatsapp;
 
-      // Load featured products
-      const featuredProducts = getFeaturedProducts().slice(0, 8);
-      const container = document.getElementById('featuredProducts');
-      container.innerHTML = featuredProducts.map(p => generateProductCard(p)).join('');
+      // Load featured products from Supabase
+      try {
+        const featuredProducts = await loadAllProducts();
+        const featured = featuredProducts.filter(p => p.featured).slice(0, 8);
+        const container = document.getElementById('featuredProducts');
+        container.innerHTML = featured.map(p => generateProductCard(p)).join('');
+      } catch (error) {
+        console.error('Error loading products:', error);
+        // Fallback to local products
+        const featuredProducts = getFeaturedProducts().slice(0, 8);
+        const container = document.getElementById('featuredProducts');
+        container.innerHTML = featuredProducts.map(p => generateProductCard(p)).join('');
+      }
     });
   </script>
 

@@ -321,16 +321,25 @@ const SAMPLE_PRODUCTS = [
 ];
 
 // Functions to get products
-function getAllProducts() {
-  // In production, merge with custom products from localStorage or Supabase
-  let customProducts = [];
+async function loadAllProducts() {
   try {
-    customProducts = JSON.parse(localStorage.getItem('custom_products') || '[]');
-    if (!Array.isArray(customProducts)) customProducts = [];
-  } catch (e) {
-    customProducts = [];
+    // Try to fetch from Supabase first
+    const supabaseProducts = await fetchProductsFromSupabase();
+    if (supabaseProducts && supabaseProducts.length > 0) {
+      return supabaseProducts;
+    }
+  } catch (error) {
+    console.warn('Supabase fetch failed, using local products:', error);
   }
-  return [...SAMPLE_PRODUCTS, ...customProducts];
+  
+  // Fallback to sample products
+  return SAMPLE_PRODUCTS;
+}
+
+function getAllProducts() {
+  // This is synchronous fallback for immediate needs
+  // For best results, use loadAllProducts() which is async
+  return SAMPLE_PRODUCTS;
 }
 
 function getProductById(id) {

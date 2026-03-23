@@ -87,26 +87,36 @@ function updatePageTitle(category, subcategory, search, sale, isNew) {
 }
 
 // Load products based on filters
-function loadProducts(category, subcategory, search, sale, isNew) {
-  let products = getAllProducts();
+async function loadProducts(category, subcategory, search, sale, isNew) {
+  try {
+    // Load from Supabase first
+    let products = await loadAllProducts();
 
-  // Apply initial filters from URL
-  if (search) {
-    products = searchProducts(search);
-    document.getElementById('searchInput').value = search;
-  } else if (sale) {
-    products = getSaleProducts();
-  } else if (isNew) {
-    products = getNewArrivals();
-  } else if (category && subcategory) {
-    products = getProductsBySubcategory(category, subcategory);
-  } else if (category) {
-    products = getProductsByCategory(category);
+    // Apply initial filters from URL
+    if (search) {
+      products = products.filter(p =>
+        p.name.toLowerCase().includes(search.toLowerCase()) ||
+        p.category.toLowerCase().includes(search.toLowerCase()) ||
+        p.description.toLowerCase().includes(search.toLowerCase())
+      );
+      document.getElementById('searchInput').value = search;
+    } else if (sale) {
+      products = products.filter(p => p.originalPrice && p.originalPrice > p.price);
+    } else if (isNew) {
+      products = products.filter(p => p.isNew);
+    } else if (category && subcategory) {
+      products = products.filter(p => p.category === category && p.subcategory === subcategory);
+    } else if (category) {
+      products = products.filter(p => p.category === category);
+    }
+
+    currentProducts = products;
+    filteredProducts = products;
+    renderProducts(filteredProducts);
+  } catch (error) {
+    console.error('Error loading products:', error);
+    showToast('Error loading products', 'error');
   }
-
-  currentProducts = products;
-  filteredProducts = products;
-  renderProducts(filteredProducts);
 }
 
 // Build category filter checkboxes

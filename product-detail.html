@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="/Vision-Books-And-Uniform-/">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Details – Visionbooks & Uniform</title>
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .product-detail {
+      padding: var(--space-3xl) 0;
+    }
+    .product-detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3xl);
+      margin-bottom: var(--space-3xl);
+    }
+    .product-image-main {
+      width: 100%;
+      border-radius: var(--border-radius-lg);
+      overflow: hidden;
+      background: var(--gray-100);
+    }
+    .product-image-main img {
+      width: 100%;
+      height: 500px;
+      object-fit: cover;
+    }
+    .product-info-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
+    }
+    .product-title {
+      font-size: var(--text-4xl);
+      color: var(--primary-dark);
+      margin: 0;
+    }
+    .product-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-lg);
+      padding-bottom: var(--space-md);
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .product-price-large {
+      font-size: var(--text-4xl);
+      font-weight: 700;
+      color: var(--primary);
+      font-family: var(--font-heading);
+    }
+    .product-actions-detail {
+      display: flex;
+      gap: var(--space-md);
+      margin-top: var(--space-lg);
+    }
+    .quantity-selector {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      padding: var(--space-md);
+      background: var(--gray-100);
+      border-radius: var(--border-radius);
+    }
+    .qty-btn-detail {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--border-radius-sm);
+      background: var(--white);
+      border: 1px solid var(--gray-300);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .qty-input-detail {
+      width: 60px;
+      text-align: center;
+      border: 1px solid var(--gray-300);
+      padding: 0.5rem;
+      font-weight: 600;
+    }
+    .product-description-section {
+      background: var(--white);
+      padding: var(--space-2xl);
+      border-radius: var(--border-radius-lg);
+      box-shadow: var(--shadow);
+    }
+    @media (max-width: 992px) {
+      .product-detail-grid {
+        grid-template-columns: 1fr;
+      }
+      .product-image-main img {
+        height: 400px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page-loader" id="pageLoader">
+    <div class="loader-spinner"></div>
+    <span class="loader-text">Loading Product...</span>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Header -->
+  <header class="header" id="mainHeader">
+    <div class="header-main">
+      <div class="container">
+        <a href="index.html" class="logo">
+          <div class="logo-icon"><i class="fas fa-book-open"></i></div>
+          <div class="logo-text">
+            <span class="store-name" id="storeName"></span>
+            <span class="store-tagline" id="storeTagline"></span>
+          </div>
+        </a>
+        <div class="header-actions">
+          <button class="header-action-btn" onclick="window.location.href='wishlist.html'">
+            <i class="fas fa-heart"></i>
+            <span>Wishlist</span>
+            <span class="action-badge" id="wishlistBadge">0</span>
+          </button>
+          <button class="header-action-btn" onclick="window.location.href='cart.html'">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Cart</span>
+            <span class="action-badge" id="cartBadge">0</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="product-detail">
+    <div class="container">
+
+      <div class="breadcrumb">
+        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+        <i class="fas fa-chevron-right"></i>
+        <a href="products.html" id="categoryLink">Products</a>
+        <i class="fas fa-chevron-right"></i>
+        <span id="productName">Product</span>
+      </div>
+
+      <div class="product-detail-grid">
+        <!-- Product Image -->
+        <div class="product-image-main">
+          <img src="" alt="" id="productImage">
+        </div>
+
+        <!-- Product Info -->
+        <div class="product-info-section">
+          <h1 class="product-title" id="productTitle">Loading...</h1>
+
+          <div class="product-meta">
+            <div class="product-rating" id="productRatingDiv"></div>
+            <span class="badge badge-success" id="stockBadge">In Stock</span>
+          </div>
+
+          <div>
+            <div class="product-price-large" id="productPriceLarge">Rs. 0</div>
+            <div id="originalPriceDiv"></div>
+          </div>
+
+          <div class="product-description-section">
+            <p id="productDescription">Loading...</p>
+          </div>
+
+          <div class="quantity-selector">
+            <span>Quantity:</span>
+            <button class="qty-btn-detail" onclick="decreaseQty()">
+              <i class="fas fa-minus"></i>
+            </button>
+            <input type="number" id="qtyInput" value="1" min="1" class="qty-input-detail" readonly>
+            <button class="qty-btn-detail" onclick="increaseQty()">
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+
+          <div class="product-actions-detail">
+            <button class="btn btn-primary" onclick="addToCartFromDetail()" style="flex: 1;">
+              <i class="fas fa-shopping-cart"></i> Add to Cart
+            </button>
+            <button class="btn btn-secondary" onclick="buyNowFromDetail()" style="flex: 1;">
+              <i class="fas fa-bolt"></i> Buy Now
+            </button>
+          </div>
+
+          <div style="margin-top: var(--space-lg);">
+            <button class="btn btn-outline" onclick="toggleWishlistDetail()" id="wishlistBtn">
+              <i class="far fa-heart"></i> Add to Wishlist
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom" style="padding: var(--space-xl) 0;">
+        <p>© 2026 <span id="footerCopyright"></span>. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <a href="#" class="whatsapp-btn" id="whatsappFloatBtn" target="_blank"><i class="fab fa-whatsapp"></i></a>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/supabase-client.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/wishlist.js"></script>
+  <script src="js/utils.js"></script>
+  <script>
+    let currentProduct = null;
+    let currentQty = 1;
+
+    document.addEventListener('DOMContentLoaded', async function() {
+      document.getElementById('storeName').textContent = CONFIG.store.name;
+      document.getElementById('storeTagline').textContent = CONFIG.store.tagline;
+      document.getElementById('footerCopyright').textContent = CONFIG.store.name;
+      document.getElementById('whatsappFloatBtn').href = CONFIG.social.whatsapp;
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const productId = urlParams.get('id');
+
+      if (!productId) {
+        window.location.href = 'products.html';
+        return;
+      }
+
+      await loadProduct(productId);
+    });
+
+    async function loadProduct(productId) {
+      try {
+        // Try Supabase first
+        const products = await fetchProductsFromSupabase();
+        currentProduct = products.find(p => String(p.id) === String(productId));
+
+        // Fallback to local products
+        if (!currentProduct) {
+          currentProduct = getProductById(productId);
+        }
+
+        if (!currentProduct) {
+          showToast('Product not found', 'error');
+          setTimeout(() => window.location.href = 'products.html', 1500);
+          return;
+        }
+
+        renderProduct();
+      } catch (error) {
+        console.error('Error loading product:', error);
+        showToast('Error loading product', 'error');
+      }
+    }
+
+    function renderProduct() {
+      document.getElementById('productTitle').textContent = currentProduct.name;
+      document.getElementById('productName').textContent = currentProduct.name;
+      document.getElementById('productImage').src = currentProduct.image;
+      document.getElementById('productImage').alt = currentProduct.name;
+      document.getElementById('productDescription').textContent = currentProduct.description || 'No description available.';
+      document.getElementById('productPriceLarge').textContent = formatPrice(currentProduct.price);
+
+      const categoryLink = document.getElementById('categoryLink');
+      categoryLink.href = `products.html?cat=${currentProduct.category}`;
+      categoryLink.textContent = CONFIG.categories[currentProduct.category]?.label || 'Products';
+
+      // Rating
+      const ratingDiv = document.getElementById('productRatingDiv');
+      ratingDiv.innerHTML = `
+        <div class="stars">${generateStars(currentProduct.rating)}</div>
+        <span class="rating-count">(${currentProduct.reviews} reviews)</span>
+      `;
+
+      // Original price
+      if (currentProduct.originalPrice && currentProduct.originalPrice > currentProduct.price) {
+        const discount = getDiscountPercent(currentProduct.price, currentProduct.originalPrice);
+        document.getElementById('originalPriceDiv').innerHTML = `
+          <span class="price-original">${formatPrice(currentProduct.originalPrice)}</span>
+          <span class="price-discount">-${discount}%</span>
+        `;
+      }
+
+      // Stock
+      const stockBadge = document.getElementById('stockBadge');
+      if (currentProduct.stock > 0) {
+        stockBadge.textContent = `In Stock (${currentProduct.stock} available)`;
+        stockBadge.className = 'badge badge-success';
+      } else {
+        stockBadge.textContent = 'Out of Stock';
+        stockBadge.className = 'badge badge-danger';
+      }
+
+      // Wishlist button
+      if (isInWishlist(currentProduct.id)) {
+        const wishlistBtn = document.getElementById('wishlistBtn');
+        wishlistBtn.innerHTML = '<i class="fas fa-heart"></i> Remove from Wishlist';
+      }
+
+      // Set max quantity
+      document.getElementById('qtyInput').max = currentProduct.stock;
+    }
+
+    function increaseQty() {
+      const input = document.getElementById('qtyInput');
+      const max = parseInt(input.max);
+      if (currentQty < max) {
+        currentQty++;
+        input.value = currentQty;
+      } else {
+        showToast('Maximum stock reached', 'warning');
+      }
+    }
+
+    function decreaseQty() {
+      if (currentQty > 1) {
+        currentQty--;
+        document.getElementById('qtyInput').value = currentQty;
+      }
+    }
+
+    function addToCartFromDetail() {
+      if (!currentProduct || currentProduct.stock <= 0) {
+        showToast('Product out of stock', 'error');
+        return;
+      }
+
+      const cart = getCart();
+      const existingItem = cart.find(item => item.id === currentProduct.id);
+
+      if (existingItem) {
+        const newQty = existingItem.qty + currentQty;
+        if (newQty > currentProduct.stock) {
+          showToast('Cannot add more. Stock limit reached', 'error');
+          return;
+        }
+        existingItem.qty = newQty;
+      } else {
+        cart.push({
+          id: currentProduct.id,
+          name: currentProduct.name,
+          price: currentProduct.price,
+          image: currentProduct.image,
+          category: currentProduct.category,
+          qty: currentQty
+        });
+      }
+
+      saveCart(cart);
+      showToast(`${currentQty} item(s) added to cart!`, 'success');
+      currentQty = 1;
+      document.getElementById('qtyInput').value = 1;
+    }
+
+    function buyNowFromDetail() {
+      addToCartFromDetail();
+      setTimeout(() => {
+        window.location.href = 'checkout.html';
+      }, 500);
+    }
+
+    function toggleWishlistDetail() {
+      const btn = document.getElementById('wishlistBtn');
+      toggleWishlist(currentProduct.id);
+      
+      if (isInWishlist(currentProduct.id)) {
+        btn.innerHTML = '<i class="fas fa-heart"></i> Remove from Wishlist';
+      } else {
+        btn.innerHTML = '<i class="far fa-heart"></i> Add to Wishlist';
+      }
+    }
+  </script>
+
+</body>
+</html>

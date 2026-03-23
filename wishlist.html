@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <base href="/Vision-Books-And-Uniform-/">
+  <base href="/vision-shop/">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wishlist – Visionbooks & Uniform</title>
@@ -101,32 +101,50 @@
 
   <a href="#" class="whatsapp-btn" id="whatsappFloatBtn" target="_blank"><i class="fab fa-whatsapp"></i></a>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script src="js/config.js"></script>
+  <script src="js/supabase-client.js"></script>
   <script src="js/products.js"></script>
   <script src="js/cart.js"></script>
   <script src="js/wishlist.js"></script>
   <script src="js/utils.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', async function() {
       document.getElementById('storeName').textContent = CONFIG.store.name;
       document.getElementById('storeTagline').textContent = CONFIG.store.tagline;
       document.getElementById('footerCopyright').textContent = CONFIG.store.name;
       document.getElementById('whatsappFloatBtn').href = CONFIG.social.whatsapp;
 
-      const wishlistProducts = getWishlistProducts();
       const emptyWishlist = document.getElementById('emptyWishlist');
       const wishlistWithItems = document.getElementById('wishlistWithItems');
       const wishlistGrid = document.getElementById('wishlistGrid');
       const wishlistCount = document.getElementById('wishlistCount');
 
-      if (wishlistProducts.length === 0) {
+      // Get wishlist IDs
+      const wishlist = getWishlist();
+      
+      if (wishlist.length === 0) {
         emptyWishlist.style.display = 'block';
         wishlistWithItems.style.display = 'none';
       } else {
-        emptyWishlist.style.display = 'none';
-        wishlistWithItems.style.display = 'block';
-        wishlistCount.textContent = wishlistProducts.length;
-        wishlistGrid.innerHTML = wishlistProducts.map(p => generateProductCard(p)).join('');
+        // Load all products and filter by wishlist IDs
+        try {
+          const allProducts = await loadAllProducts();
+          const wishlistProducts = allProducts.filter(p => wishlist.includes(p.id));
+          
+          emptyWishlist.style.display = 'none';
+          wishlistWithItems.style.display = 'block';
+          wishlistCount.textContent = wishlistProducts.length;
+          wishlistGrid.innerHTML = wishlistProducts.map(p => generateProductCard(p)).join('');
+        } catch (error) {
+          console.error('Error loading wishlist products:', error);
+          // Fallback
+          const wishlistProducts = getWishlistProducts();
+          emptyWishlist.style.display = wishlistProducts.length === 0 ? 'block' : 'none';
+          wishlistWithItems.style.display = wishlistProducts.length === 0 ? 'none' : 'block';
+          wishlistCount.textContent = wishlistProducts.length;
+          wishlistGrid.innerHTML = wishlistProducts.map(p => generateProductCard(p)).join('');
+        }
       }
     });
   </script>
