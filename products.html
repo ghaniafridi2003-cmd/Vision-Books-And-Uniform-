@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="/vision-shop/">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Browse our complete collection of books, stationery, gifts and uniforms. Quality products at affordable prices.">
+  <title>Products – Visionbooks & Uniform</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/products.css">
+</head>
+<body>
+
+  <!-- Page Loader -->
+  <div class="page-loader" id="pageLoader">
+    <div class="loader-spinner"></div>
+    <span class="loader-text">Loading Products...</span>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="container">
+      <div class="top-bar-left">
+        <span><i class="fas fa-truck"></i> Free delivery on orders above Rs. 2,000</span>
+        <span><i class="fas fa-phone"></i> <span id="topBarPhone"></span></span>
+      </div>
+      <div class="top-bar-marquee">
+        <span id="announcementMarquee"></span>
+      </div>
+      <div class="top-bar-right">
+        <a href="about.html"><i class="fas fa-info-circle"></i> About Us</a>
+        <a href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="header" id="mainHeader">
+    <div class="header-main">
+      <div class="container">
+        <button class="hamburger" id="hamburger" aria-label="Open Menu">
+          <span></span><span></span><span></span>
+        </button>
+
+        <a href="index.html" class="logo">
+          <div class="logo-icon"><i class="fas fa-book-open"></i></div>
+          <div class="logo-text">
+            <span class="store-name" id="storeName"></span>
+            <span class="store-tagline" id="storeTagline"></span>
+          </div>
+        </a>
+
+        <div class="search-bar">
+          <form id="searchForm" onsubmit="handleSearch(event)">
+            <select class="search-category" id="searchCategory">
+              <option value="all">All Categories</option>
+              <option value="books">Books</option>
+              <option value="stationery">Stationery</option>
+              <option value="gifts">Gifts</option>
+              <option value="uniforms">Uniforms</option>
+            </select>
+            <input type="text" class="search-input" id="searchInput" placeholder="Search for books, pens, gifts...">
+            <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
+          </form>
+        </div>
+
+        <div class="header-actions">
+          <button class="header-action-btn" onclick="window.location.href='wishlist.html'" title="Wishlist">
+            <i class="fas fa-heart"></i>
+            <span>Wishlist</span>
+            <span class="action-badge" id="wishlistBadge">0</span>
+          </button>
+          <button class="header-action-btn" onclick="window.location.href='cart.html'" title="Cart">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Cart</span>
+            <span class="action-badge" id="cartBadge">0</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav">
+      <ul class="nav-list">
+        <li class="nav-item">
+          <a href="index.html" class="nav-link"><i class="fas fa-home"></i> Home</a>
+        </li>
+        <li class="nav-item">
+          <a href="products.html?cat=books" class="nav-link"><i class="fas fa-book"></i> Books</a>
+        </li>
+        <li class="nav-item">
+          <a href="products.html?cat=stationery" class="nav-link"><i class="fas fa-pen"></i> Stationery</a>
+        </li>
+        <li class="nav-item">
+          <a href="products.html?cat=gifts" class="nav-link"><i class="fas fa-gift"></i> Gifts</a>
+        </li>
+        <li class="nav-item">
+          <a href="products.html?cat=uniforms" class="nav-link"><i class="fas fa-graduation-cap"></i> Uniforms</a>
+        </li>
+        <li class="nav-item">
+          <a href="products.html?sale=true" class="nav-link"><i class="fas fa-tags"></i> Sale</a>
+        </li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Products Section -->
+  <section style="padding: var(--space-2xl) 0;">
+    <div class="container">
+
+      <!-- Page Header -->
+      <div class="products-header">
+        <div>
+          <h1 id="pageTitle">All Products</h1>
+          <p id="pageDescription">Browse our complete collection</p>
+        </div>
+        <div class="products-controls">
+          <select id="sortSelect" class="sort-select">
+            <option value="featured">Sort: Featured</option>
+            <option value="price-low">Price: Low to High</option>
+            <option value="price-high">Price: High to Low</option>
+            <option value="name">Name: A to Z</option>
+            <option value="rating">Rating: High to Low</option>
+          </select>
+          <button class="filter-toggle" id="filterToggle">
+            <i class="fas fa-filter"></i> Filters
+          </button>
+        </div>
+      </div>
+
+      <div class="products-layout">
+
+        <!-- Filters Sidebar -->
+        <aside class="filters-sidebar" id="filtersSidebar">
+          <div class="filters-header">
+            <h3>Filters</h3>
+            <button class="btn-link" onclick="clearFilters()">Clear All</button>
+          </div>
+
+          <!-- Category Filter -->
+          <div class="filter-group">
+            <h4>Category</h4>
+            <div class="filter-options" id="categoryFilters">
+              <!-- Populated by JavaScript -->
+            </div>
+          </div>
+
+          <!-- Price Range Filter -->
+          <div class="filter-group">
+            <h4>Price Range</h4>
+            <div class="filter-options">
+              <label class="filter-checkbox">
+                <input type="checkbox" name="price" value="0-500" onchange="applyFilters()">
+                <span>Under Rs. 500</span>
+              </label>
+              <label class="filter-checkbox">
+                <input type="checkbox" name="price" value="500-1000" onchange="applyFilters()">
+                <span>Rs. 500 - 1,000</span>
+              </label>
+              <label class="filter-checkbox">
+                <input type="checkbox" name="price" value="1000-2000" onchange="applyFilters()">
+                <span>Rs. 1,000 - 2,000</span>
+              </label>
+              <label class="filter-checkbox">
+                <input type="checkbox" name="price" value="2000-5000" onchange="applyFilters()">
+                <span>Rs. 2,000 - 5,000</span>
+              </label>
+              <label class="filter-checkbox">
+                <input type="checkbox" name="price" value="5000-999999" onchange="applyFilters()">
+                <span>Above Rs. 5,000</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Badge Filter -->
+          <div class="filter-group">
+            <h4>Special Offers</h4>
+            <div class="filter-options">
+              <label class="filter-checkbox">
+                <input type="checkbox" name="badge" value="sale" onchange="applyFilters()">
+                <span>On Sale</span>
+              </label>
+              <label class="filter-checkbox">
+                <input type="checkbox" name="badge" value="new" onchange="applyFilters()">
+                <span>New Arrivals</span>
+              </label>
+              <label class="filter-checkbox">
+                <input type="checkbox" name="badge" value="hot" onchange="applyFilters()">
+                <span>Hot Deals</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Rating Filter -->
+          <div class="filter-group">
+            <h4>Rating</h4>
+            <div class="filter-options">
+              <label class="filter-checkbox">
+                <input type="checkbox" name="rating" value="4" onchange="applyFilters()">
+                <span>⭐⭐⭐⭐ & up</span>
+              </label>
+              <label class="filter-checkbox">
+                <input type="checkbox" name="rating" value="3" onchange="applyFilters()">
+                <span>⭐⭐⭐ & up</span>
+              </label>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Products Grid -->
+        <div class="products-main">
+          <div class="products-results" id="resultsInfo">
+            Showing <span id="resultsCount">0</span> products
+          </div>
+
+          <div class="product-grid" id="productsGrid">
+            <!-- Products loaded by JavaScript -->
+          </div>
+
+          <div id="noResults" style="display: none; text-align: center; padding: var(--space-3xl);">
+            <i class="fas fa-search" style="font-size: 4rem; color: var(--gray-400); margin-bottom: var(--space-lg);"></i>
+            <h3>No products found</h3>
+            <p style="color: var(--gray-600); margin-bottom: var(--space-lg);">Try adjusting your filters or search terms</p>
+            <button class="btn btn-primary" onclick="clearFilters()">Clear Filters</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">
+            <div class="logo-icon"><i class="fas fa-book-open"></i></div>
+            <div class="logo-text">
+              <span class="store-name" id="footerStoreName"></span>
+              <span class="store-tagline" id="footerStoreTagline"></span>
+            </div>
+          </a>
+          <p id="footerDescription"></p>
+        </div>
+
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <div class="footer-links">
+            <a href="index.html"><i class="fas fa-chevron-right"></i> Home</a>
+            <a href="products.html"><i class="fas fa-chevron-right"></i> All Products</a>
+            <a href="cart.html"><i class="fas fa-chevron-right"></i> My Cart</a>
+            <a href="wishlist.html"><i class="fas fa-chevron-right"></i> Wishlist</a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Categories</h4>
+          <div class="footer-links">
+            <a href="products.html?cat=books"><i class="fas fa-chevron-right"></i> Books</a>
+            <a href="products.html?cat=stationery"><i class="fas fa-chevron-right"></i> Stationery</a>
+            <a href="products.html?cat=gifts"><i class="fas fa-chevron-right"></i> Gifts</a>
+            <a href="products.html?cat=uniforms"><i class="fas fa-chevron-right"></i> Uniforms</a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Contact Us</h4>
+          <div class="footer-contact-item">
+            <i class="fas fa-phone-alt"></i>
+            <div>
+              <strong>Phone</strong>
+              <span id="footerPhone"></span>
+            </div>
+          </div>
+          <div class="footer-contact-item">
+            <i class="fas fa-envelope"></i>
+            <div>
+              <strong>Email</strong>
+              <span id="footerEmail"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2026 <span id="footerCopyright"></span>. All rights reserved.</p>
+        <div class="payment-methods">
+          <span>We Accept:</span>
+          <span class="payment-icon"><i class="fas fa-truck"></i> COD</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <button class="back-to-top" id="backToTop"><i class="fas fa-chevron-up"></i></button>
+  <a href="#" class="whatsapp-btn" id="whatsappFloatBtn" target="_blank"><i class="fab fa-whatsapp"></i></a>
+
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/wishlist.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/products-page.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://yourusername.github.io/vision-shop/sitemap.xml
+
+# Crawl-delay for bots
+Crawl-delay: 1

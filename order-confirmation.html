@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="/vision-shop/">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Confirmed – Visionbooks & Uniform</title>
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✅</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="page-loader" id="pageLoader">
+    <div class="loader-spinner"></div>
+    <span class="loader-text">Loading...</span>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <header class="header" id="mainHeader">
+    <div class="header-main">
+      <div class="container">
+        <a href="index.html" class="logo">
+          <div class="logo-icon"><i class="fas fa-book-open"></i></div>
+          <div class="logo-text">
+            <span class="store-name" id="storeName"></span>
+            <span class="store-tagline" id="storeTagline"></span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <section style="padding: var(--space-3xl) 0; min-height: 70vh;">
+    <div class="container">
+
+      <div style="max-width: 800px; margin: 0 auto; text-align: center; padding: var(--space-3xl);">
+        
+        <!-- Success Icon -->
+        <div style="width: 100px; height: 100px; background: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-xl); animation: scaleIn 0.5s ease;">
+          <i class="fas fa-check" style="font-size: 3rem; color: var(--white);"></i>
+        </div>
+
+        <h1 style="font-size: var(--text-4xl); color: var(--success); margin-bottom: var(--space-md);">
+          Order Confirmed!
+        </h1>
+
+        <p style="font-size: var(--text-lg); color: var(--gray-600); margin-bottom: var(--space-2xl);">
+          Thank you for your order. We've received your order details via WhatsApp and will process it shortly.
+        </p>
+
+        <!-- Order Details Card -->
+        <div style="background: var(--white); border-radius: var(--border-radius-lg); padding: var(--space-2xl); box-shadow: var(--shadow); text-align: left; margin-bottom: var(--space-2xl);">
+          <h3 style="font-size: var(--text-xl); color: var(--primary); margin-bottom: var(--space-lg); text-align: center;">
+            Order Details
+          </h3>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg); margin-bottom: var(--space-lg); padding-bottom: var(--space-lg); border-bottom: 1px solid var(--gray-200);">
+            <div>
+              <p style="font-size: var(--text-sm); color: var(--gray-600); margin-bottom: 0.25rem;">Order ID</p>
+              <p style="font-weight: 700; color: var(--primary-dark); margin: 0;" id="orderId">-</p>
+            </div>
+            <div>
+              <p style="font-size: var(--text-sm); color: var(--gray-600); margin-bottom: 0.25rem;">Order Date</p>
+              <p style="font-weight: 700; color: var(--primary-dark); margin: 0;" id="orderDate">-</p>
+            </div>
+          </div>
+
+          <div style="margin-bottom: var(--space-lg);">
+            <p style="font-size: var(--text-sm); color: var(--gray-600); margin-bottom: 0.5rem;">Order Total</p>
+            <p style="font-size: var(--text-3xl); font-weight: 700; color: var(--primary); margin: 0; font-family: var(--font-heading);" id="orderTotal">Rs. 0</p>
+          </div>
+
+          <div style="background: rgba(212,137,63,0.1); padding: var(--space-md); border-radius: var(--border-radius); border-left: 4px solid var(--accent);">
+            <p style="margin: 0; font-size: var(--text-sm); color: var(--gray-700);">
+              <strong>Payment Method:</strong> Cash on Delivery (COD)
+            </p>
+          </div>
+        </div>
+
+        <!-- What's Next -->
+        <div style="background: var(--gray-100); border-radius: var(--border-radius-lg); padding: var(--space-xl); margin-bottom: var(--space-2xl); text-align: left;">
+          <h4 style="font-size: var(--text-lg); color: var(--primary-dark); margin-bottom: var(--space-md);">
+            📦 What Happens Next?
+          </h4>
+          <ol style="margin: 0; padding-left: var(--space-lg); color: var(--gray-700); line-height: 1.8;">
+            <li>We'll confirm your order details within 24 hours</li>
+            <li>Your order will be carefully packed and shipped</li>
+            <li>You'll receive your order in <strong id="deliveryDays"></strong></li>
+            <li>Pay cash when the order is delivered to your doorstep</li>
+          </ol>
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="display: flex; gap: var(--space-md); justify-content: center; flex-wrap: wrap;">
+          <a href="products.html" class="btn btn-primary">
+            <i class="fas fa-shopping-bag"></i> Continue Shopping
+          </a>
+          <a href="index.html" class="btn btn-outline">
+            <i class="fas fa-home"></i> Back to Home
+          </a>
+        </div>
+
+        <!-- Contact Info -->
+        <div style="margin-top: var(--space-2xl); padding-top: var(--space-xl); border-top: 1px solid var(--gray-200);">
+          <p style="color: var(--gray-600); font-size: var(--text-sm);">
+            Questions about your order? Contact us:
+          </p>
+          <div style="display: flex; gap: var(--space-xl); justify-content: center; margin-top: var(--space-md); flex-wrap: wrap;">
+            <a href="#" id="whatsappContact" style="color: #25D366; font-weight: 600;">
+              <i class="fab fa-whatsapp"></i> WhatsApp
+            </a>
+            <a href="#" id="phoneContact" style="color: var(--primary); font-weight: 600;">
+              <i class="fas fa-phone"></i> <span id="phoneNumber"></span>
+            </a>
+            <a href="#" id="emailContact" style="color: var(--primary); font-weight: 600;">
+              <i class="fas fa-envelope"></i> <span id="emailAddress"></span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom" style="padding: var(--space-xl) 0;">
+        <p>© 2026 <span id="footerCopyright"></span>. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <style>
+    @keyframes scaleIn {
+      from {
+        transform: scale(0);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+  </style>
+
+  <script src="js/config.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/wishlist.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/checkout.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Update config data
+      document.getElementById('storeName').textContent = CONFIG.store.name;
+      document.getElementById('storeTagline').textContent = CONFIG.store.tagline;
+      document.getElementById('footerCopyright').textContent = CONFIG.store.name;
+      document.getElementById('phoneNumber').textContent = CONFIG.store.phone;
+      document.getElementById('emailAddress').textContent = CONFIG.store.email;
+      document.getElementById('deliveryDays').textContent = `${CONFIG.shipping.estimatedDays} business days`;
+      
+      // Update contact links
+      document.getElementById('whatsappContact').href = CONFIG.social.whatsapp;
+      document.getElementById('phoneContact').href = `tel:${CONFIG.store.phone}`;
+      document.getElementById('emailContact').href = `mailto:${CONFIG.store.email}`;
+
+      // Get order details from URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const orderId = urlParams.get('orderId');
+
+      if (orderId) {
+        const order = getOrderById(orderId);
+        if (order) {
+          document.getElementById('orderId').textContent = order.id;
+          document.getElementById('orderDate').textContent = formatDate(order.timestamp);
+          document.getElementById('orderTotal').textContent = formatPrice(order.summary.total);
+        } else {
+          document.getElementById('orderId').textContent = orderId;
+          document.getElementById('orderDate').textContent = formatDate(new Date().toISOString());
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>

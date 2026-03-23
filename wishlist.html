@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="/vision-shop/">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wishlist – Visionbooks & Uniform</title>
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❤️</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="page-loader" id="pageLoader">
+    <div class="loader-spinner"></div>
+    <span class="loader-text">Loading Wishlist...</span>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <header class="header" id="mainHeader">
+    <div class="header-main">
+      <div class="container">
+        <a href="index.html" class="logo">
+          <div class="logo-icon"><i class="fas fa-book-open"></i></div>
+          <div class="logo-text">
+            <span class="store-name" id="storeName"></span>
+            <span class="store-tagline" id="storeTagline"></span>
+          </div>
+        </a>
+        <div class="header-actions">
+          <button class="header-action-btn" onclick="window.location.href='wishlist.html'">
+            <i class="fas fa-heart"></i>
+            <span>Wishlist</span>
+            <span class="action-badge" id="wishlistBadge">0</span>
+          </button>
+          <button class="header-action-btn" onclick="window.location.href='cart.html'">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Cart</span>
+            <span class="action-badge" id="cartBadge">0</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section style="padding: var(--space-3xl) 0; min-height: 60vh;">
+    <div class="container">
+
+      <div class="breadcrumb">
+        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+        <i class="fas fa-chevron-right"></i>
+        <span>Wishlist</span>
+      </div>
+
+      <h1 class="page-title">My Wishlist</h1>
+
+      <!-- Empty Wishlist -->
+      <div id="emptyWishlist" style="display: none; text-align: center; padding: var(--space-3xl);">
+        <i class="fas fa-heart" style="font-size: 5rem; color: var(--gray-400); margin-bottom: var(--space-xl);"></i>
+        <h2>Your wishlist is empty</h2>
+        <p style="color: var(--gray-600); margin-bottom: var(--space-xl);">Save your favorite items for later!</p>
+        <a href="products.html" class="btn btn-primary">
+          <i class="fas fa-shopping-bag"></i> Start Shopping
+        </a>
+      </div>
+
+      <!-- Wishlist with Items -->
+      <div id="wishlistWithItems" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-xl);">
+          <p style="color: var(--gray-600);"><span id="wishlistCount">0</span> items in your wishlist</p>
+          <div style="display: flex; gap: var(--space-md);">
+            <button class="btn btn-secondary" onclick="moveWishlistToCart()">
+              <i class="fas fa-shopping-cart"></i> Move All to Cart
+            </button>
+            <button class="btn-link" onclick="clearWishlist(); window.location.reload();">
+              <i class="fas fa-trash"></i> Clear Wishlist
+            </button>
+          </div>
+        </div>
+
+        <div class="product-grid" id="wishlistGrid">
+          <!-- Products loaded by JavaScript -->
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom" style="padding: var(--space-xl) 0;">
+        <p>© 2026 <span id="footerCopyright"></span>. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <a href="#" class="whatsapp-btn" id="whatsappFloatBtn" target="_blank"><i class="fab fa-whatsapp"></i></a>
+
+  <script src="js/config.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/wishlist.js"></script>
+  <script src="js/utils.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('storeName').textContent = CONFIG.store.name;
+      document.getElementById('storeTagline').textContent = CONFIG.store.tagline;
+      document.getElementById('footerCopyright').textContent = CONFIG.store.name;
+      document.getElementById('whatsappFloatBtn').href = CONFIG.social.whatsapp;
+
+      const wishlistProducts = getWishlistProducts();
+      const emptyWishlist = document.getElementById('emptyWishlist');
+      const wishlistWithItems = document.getElementById('wishlistWithItems');
+      const wishlistGrid = document.getElementById('wishlistGrid');
+      const wishlistCount = document.getElementById('wishlistCount');
+
+      if (wishlistProducts.length === 0) {
+        emptyWishlist.style.display = 'block';
+        wishlistWithItems.style.display = 'none';
+      } else {
+        emptyWishlist.style.display = 'none';
+        wishlistWithItems.style.display = 'block';
+        wishlistCount.textContent = wishlistProducts.length;
+        wishlistGrid.innerHTML = wishlistProducts.map(p => generateProductCard(p)).join('');
+      }
+    });
+  </script>
+
+</body>
+</html>

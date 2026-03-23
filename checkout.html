@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="/vision-shop/">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout – Visionbooks & Uniform</title>
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/checkout.css">
+</head>
+<body>
+
+  <div class="page-loader" id="pageLoader">
+    <div class="loader-spinner"></div>
+    <span class="loader-text">Loading Checkout...</span>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <header class="header" id="mainHeader">
+    <div class="header-main">
+      <div class="container">
+        <a href="index.html" class="logo">
+          <div class="logo-icon"><i class="fas fa-book-open"></i></div>
+          <div class="logo-text">
+            <span class="store-name" id="storeName"></span>
+            <span class="store-tagline" id="storeTagline"></span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <section style="padding: var(--space-3xl) 0; min-height: 70vh;">
+    <div class="container">
+
+      <div class="breadcrumb">
+        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+        <i class="fas fa-chevron-right"></i>
+        <a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart</a>
+        <i class="fas fa-chevron-right"></i>
+        <span>Checkout</span>
+      </div>
+
+      <!-- Empty Checkout -->
+      <div id="emptyCheckout" style="display: none; text-align: center; padding: var(--space-3xl);">
+        <i class="fas fa-shopping-cart" style="font-size: 5rem; color: var(--gray-400); margin-bottom: var(--space-xl);"></i>
+        <h2>Your cart is empty</h2>
+        <p style="color: var(--gray-600); margin-bottom: var(--space-xl);">Add some products before checking out</p>
+        <a href="products.html" class="btn btn-primary">
+          <i class="fas fa-shopping-bag"></i> Start Shopping
+        </a>
+      </div>
+
+      <!-- Checkout Layout -->
+      <div id="checkoutLayout" style="display: none;">
+        <h1 class="page-title">Secure Checkout</h1>
+
+        <div class="checkout-steps">
+          <div class="step active">
+            <div class="step-number">1</div>
+            <span>Delivery Details</span>
+          </div>
+          <div class="step">
+            <div class="step-number">2</div>
+            <span>Review Order</span>
+          </div>
+          <div class="step">
+            <div class="step-number">3</div>
+            <span>Confirm via WhatsApp</span>
+          </div>
+        </div>
+
+        <div class="checkout-grid">
+
+          <!-- Checkout Form -->
+          <div class="checkout-form-container">
+            <form id="checkoutForm" onsubmit="submitCheckout(event)">
+
+              <div class="form-section">
+                <h3><i class="fas fa-user"></i> Customer Information</h3>
+                
+                <div class="form-group">
+                  <label for="fullName">Full Name *</label>
+                  <input type="text" id="fullName" required placeholder="Enter your full name">
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" required placeholder="your@email.com">
+                  </div>
+                  <div class="form-group">
+                    <label for="phone">Phone Number *</label>
+                    <input type="tel" id="phone" required placeholder="03XX-XXXXXXX">
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-section">
+                <h3><i class="fas fa-map-marker-alt"></i> Delivery Address</h3>
+
+                <div class="form-group">
+                  <label for="address">Complete Address *</label>
+                  <textarea id="address" rows="3" required placeholder="House/Flat number, Street, Area"></textarea>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="city">City *</label>
+                    <select id="city" required>
+                      <option value="">Select City</option>
+                      <option value="Karachi">Karachi</option>
+                      <option value="Lahore">Lahore</option>
+                      <option value="Islamabad">Islamabad</option>
+                      <option value="Rawalpindi">Rawalpindi</option>
+                      <option value="Faisalabad">Faisalabad</option>
+                      <option value="Multan">Multan</option>
+                      <option value="Peshawar">Peshawar</option>
+                      <option value="Quetta">Quetta</option>
+                      <option value="Sialkot">Sialkot</option>
+                      <option value="Gujranwala">Gujranwala</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="postalCode">Postal Code (Optional)</label>
+                    <input type="text" id="postalCode" placeholder="XXXXX">
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-section">
+                <h3><i class="fas fa-credit-card"></i> Payment Method</h3>
+                
+                <div class="payment-options">
+                  <label class="payment-option">
+                    <input type="radio" name="paymentMethod" value="cod" checked>
+                    <div class="payment-option-content">
+                      <div class="payment-icon"><i class="fas fa-truck"></i></div>
+                      <div>
+                        <strong>Cash on Delivery</strong>
+                        <p>Pay when you receive your order</p>
+                      </div>
+                    </div>
+                  </label>
+                </div>
+
+                <div class="cod-notice">
+                  <i class="fas fa-info-circle"></i>
+                  <div>
+                    <strong>How it works:</strong>
+                    <p>1. Complete this form and place your order<br>
+                    2. Confirm order details via WhatsApp<br>
+                    3. Pay cash when your order is delivered</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-section">
+                <h3><i class="fas fa-comment"></i> Order Notes (Optional)</h3>
+                <div class="form-group">
+                  <textarea id="notes" rows="3" placeholder="Any special instructions? (e.g., preferred delivery time, school name for uniforms, gift wrapping request)"></textarea>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block btn-large">
+                <i class="fas fa-lock"></i> Place Order & Confirm on WhatsApp
+              </button>
+
+              <div style="text-align: center; margin-top: var(--space-md); font-size: var(--text-sm); color: var(--gray-600);">
+                <i class="fas fa-shield-alt"></i> Your information is secure and will only be used for order processing
+              </div>
+
+            </form>
+          </div>
+
+          <!-- Order Summary -->
+          <div class="order-summary-container">
+            <div class="order-summary">
+              <h3>Order Summary</h3>
+
+              <div class="summary-items" id="summaryItems">
+                <!-- Items loaded by JavaScript -->
+              </div>
+
+              <div class="summary-row">
+                <span>Subtotal:</span>
+                <span id="summarySubtotal">Rs. 0</span>
+              </div>
+
+              <div class="summary-row">
+                <span>Shipping:</span>
+                <span id="summaryShipping">Rs. 200</span>
+              </div>
+
+              <div class="summary-row summary-total">
+                <span>Total:</span>
+                <span id="summaryTotal">Rs. 0</span>
+              </div>
+
+              <div class="delivery-estimate">
+                <i class="fas fa-truck"></i>
+                <span>Estimated delivery: <strong id="deliveryEstimate"></strong></span>
+              </div>
+            </div>
+
+            <div class="trust-badges">
+              <div class="trust-badge">
+                <i class="fas fa-shield-alt"></i>
+                <span>Secure Checkout</span>
+              </div>
+              <div class="trust-badge">
+                <i class="fas fa-truck"></i>
+                <span>Fast Delivery</span>
+              </div>
+              <div class="trust-badge">
+                <i class="fas fa-undo"></i>
+                <span>Easy Returns</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom" style="padding: var(--space-xl) 0;">
+        <p>© 2026 <span id="footerCopyright"></span>. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/wishlist.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/checkout.js"></script>
+
+</body>
+</html>

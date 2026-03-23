@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="/vision-shop/">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart – Visionbooks & Uniform</title>
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/cart.css">
+</head>
+<body>
+
+  <div class="page-loader" id="pageLoader">
+    <div class="loader-spinner"></div>
+    <span class="loader-text">Loading Cart...</span>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Simplified Header for Cart Page -->
+  <header class="header" id="mainHeader">
+    <div class="header-main">
+      <div class="container">
+        <a href="index.html" class="logo">
+          <div class="logo-icon"><i class="fas fa-book-open"></i></div>
+          <div class="logo-text">
+            <span class="store-name" id="storeName"></span>
+            <span class="store-tagline" id="storeTagline"></span>
+          </div>
+        </a>
+        <div class="header-actions">
+          <button class="header-action-btn" onclick="window.location.href='wishlist.html'">
+            <i class="fas fa-heart"></i>
+            <span>Wishlist</span>
+            <span class="action-badge" id="wishlistBadge">0</span>
+          </button>
+          <button class="header-action-btn" onclick="window.location.href='cart.html'">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Cart</span>
+            <span class="action-badge" id="cartBadge">0</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Cart Section -->
+  <section style="padding: var(--space-3xl) 0; min-height: 60vh;">
+    <div class="container">
+
+      <!-- Breadcrumb -->
+      <div class="breadcrumb">
+        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+        <i class="fas fa-chevron-right"></i>
+        <span>Shopping Cart</span>
+      </div>
+
+      <h1 class="page-title">Shopping Cart</h1>
+
+      <!-- Empty Cart -->
+      <div id="emptyCart" style="display: none; text-align: center; padding: var(--space-3xl);">
+        <i class="fas fa-shopping-cart" style="font-size: 5rem; color: var(--gray-400); margin-bottom: var(--space-xl);"></i>
+        <h2>Your cart is empty</h2>
+        <p style="color: var(--gray-600); margin-bottom: var(--space-xl);">Add some products to get started!</p>
+        <a href="products.html" class="btn btn-primary">
+          <i class="fas fa-shopping-bag"></i> Continue Shopping
+        </a>
+      </div>
+
+      <!-- Cart with Items -->
+      <div id="cartWithItems" style="display: none;">
+        <div class="cart-layout">
+
+          <!-- Cart Items -->
+          <div class="cart-items">
+            <div class="cart-items-header">
+              <h3>Cart Items</h3>
+              <button class="btn-link" onclick="clearCart()">
+                <i class="fas fa-trash"></i> Clear Cart
+              </button>
+            </div>
+
+            <div id="cartItemsList">
+              <!-- Cart items loaded by JavaScript -->
+            </div>
+
+            <div style="margin-top: var(--space-xl);">
+              <a href="products.html" class="btn btn-outline">
+                <i class="fas fa-arrow-left"></i> Continue Shopping
+              </a>
+            </div>
+          </div>
+
+          <!-- Cart Summary -->
+          <div class="cart-summary">
+            <h3>Order Summary</h3>
+            
+            <div class="summary-row">
+              <span>Subtotal:</span>
+              <span id="summarySubtotal">Rs. 0</span>
+            </div>
+
+            <div class="summary-row">
+              <span>Shipping:</span>
+              <span id="summaryShipping">Rs. 200</span>
+            </div>
+
+            <div class="summary-row summary-total">
+              <span>Total:</span>
+              <span id="summaryTotal">Rs. 0</span>
+            </div>
+
+            <div class="shipping-info">
+              <i class="fas fa-truck"></i>
+              <span id="shippingMessage">Add Rs. <strong id="shippingThreshold">0</strong> more for FREE delivery!</span>
+            </div>
+
+            <button class="btn btn-primary btn-block" onclick="window.location.href='checkout.html'">
+              <i class="fas fa-lock"></i> Proceed to Checkout
+            </button>
+
+            <div style="margin-top: var(--space-lg); text-align: center; font-size: var(--text-sm); color: var(--gray-600);">
+              <i class="fas fa-shield-alt"></i> Secure Checkout | Cash on Delivery Available
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom" style="padding: var(--space-xl) 0;">
+        <p>© 2026 <span id="footerCopyright"></span>. All rights reserved.</p>
+        <div class="payment-methods">
+          <span>We Accept:</span>
+          <span class="payment-icon"><i class="fas fa-truck"></i> COD</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <a href="#" class="whatsapp-btn" id="whatsappFloatBtn" target="_blank"><i class="fab fa-whatsapp"></i></a>
+
+  <script src="js/config.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/wishlist.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/cart-page.js"></script>
+
+</body>
+</html>
