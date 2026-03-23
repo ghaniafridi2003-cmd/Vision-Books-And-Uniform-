@@ -138,10 +138,30 @@ function renderLowStock() {
 }
 
 // Show section
-function showSection(section) {
+function showSection(section, event) {
+  // Prevent default link behavior
+  if (event) {
+    event.preventDefault();
+  }
+  
   // Update nav items
   document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-  event.target.classList.add('active');
+  
+  // Find and mark the current nav item as active
+  const navItems = document.querySelectorAll('.nav-item');
+  navItems.forEach(item => {
+    const itemSection = {
+      'dashboard': 'dashboard',
+      'products': 'products',
+      'orders': 'orders',
+      'settings': 'settings'
+    };
+    
+    // Mark as active if onclick contains the current section
+    if (item.getAttribute('onclick').includes(`'${section}'`)) {
+      item.classList.add('active');
+    }
+  });
 
   // Hide all sections
   document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none');
