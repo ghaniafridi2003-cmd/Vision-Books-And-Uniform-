@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://yourusername.github.io/vision-shop/sitemap.xml
+Sitemap: https://ghaniafridi2003-cmd.github.io/Vision-Books-And-Uniform-/sitemap.xml
 
 # Crawl-delay for bots
 Crawl-delay: 1

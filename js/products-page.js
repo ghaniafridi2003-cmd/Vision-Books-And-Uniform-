@@ -88,6 +88,13 @@ function updatePageTitle(category, subcategory, search, sale, isNew) {
 
 // Load products based on filters
 async function loadProducts(category, subcategory, search, sale, isNew) {
+  const grid = document.getElementById('productsGrid');
+  
+  // Show skeletons while loading
+  grid.innerHTML = Array(8).fill(0).map(() => `
+    <div class="skeleton skeleton-card"></div>
+  `).join('');
+
   try {
     // Load from Supabase first
     let products = await loadAllProducts();
@@ -129,8 +136,8 @@ function buildCategoryFilters() {
     const config = CONFIG.categories[cat];
     html += `
       <label class="filter-checkbox">
-        <input type="checkbox" name="category" value="${cat}" onchange="applyFilters()">
-        <span>${config.label}</span>
+        <input type="checkbox" name="category" value="${escapeHTML(cat)}" onchange="applyFilters()">
+        <span>${escapeHTML(config.label)}</span>
       </label>
     `;
   });

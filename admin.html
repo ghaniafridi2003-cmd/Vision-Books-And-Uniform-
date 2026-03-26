@@ -382,11 +382,33 @@
     </div>
   </div>
 
+  <!-- Order Modal -->
+  <div id="orderModal" class="modal">
+    <div class="modal-content" style="max-width: 800px;">
+      <div class="modal-header">
+        <h3 id="orderModalId">Order Details</h3>
+        <button class="modal-close" onclick="closeOrderModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body" id="orderModalBody">
+        <!-- Loaded by JS -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="closeOrderModal()">Close</button>
+        <button type="button" class="btn btn-primary" id="printOrderBtn">
+          <i class="fas fa-print"></i> Print Invoice
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script src="js/config.js"></script>
   <script src="js/products.js"></script>
   <script src="js/supabase-client.js"></script>
+  <script src="js/utils.js"></script>
   <script src="js/admin.js"></script>
 
 </body>

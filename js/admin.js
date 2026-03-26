@@ -129,8 +129,8 @@ function renderLowStock() {
   container.innerHTML = lowStock.map(product => `
     <div class="order-item">
       <div>
-        <strong>${product.name}</strong>
-        <small>${product.category}</small>
+        <strong>${escapeHTML(product.name)}</strong>
+        <small>${escapeHTML(product.category)}</small>
       </div>
       <span class="badge badge-warning">${product.stock} left</span>
     </div>
@@ -190,7 +190,7 @@ function renderProductsTable() {
   const tbody = document.getElementById('productsTableBody');
   
   if (allProducts.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No products found</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No products found</td></tr>';
     return;
   }
 
@@ -204,10 +204,15 @@ function renderProductsTable() {
       <td>${formatPrice(product.price)}</td>
       <td>${product.stock}</td>
       <td>
+        <span class="badge ${product.stock > 0 ? 'badge-success' : 'badge-danger'}">
+          ${product.stock > 0 ? 'In Stock' : 'Out of Stock'}
+        </span>
+      </td>
+      <td>
         <button class="btn-icon" onclick="editProduct('${escapeHTML(product.id)}')" title="Edit">
           <i class="fas fa-edit"></i>
         </button>
-        <button class="btn-icon" onclick="deleteProduct('${escapeHTML(product.id)}')" style="color: var(--danger);" title="Delete">
+        <button class="btn-icon" onclick="confirmDeleteProduct('${escapeHTML(product.id)}')" style="color: var(--danger);" title="Delete">
           <i class="fas fa-trash"></i>
         </button>
       </td>
@@ -235,10 +240,15 @@ function filterProducts() {
       <td>${formatPrice(product.price)}</td>
       <td>${product.stock}</td>
       <td>
+        <span class="badge ${product.stock > 0 ? 'badge-success' : 'badge-danger'}">
+          ${product.stock > 0 ? 'In Stock' : 'Out of Stock'}
+        </span>
+      </td>
+      <td>
         <button class="btn-icon" onclick="editProduct('${escapeHTML(product.id)}')" title="Edit">
           <i class="fas fa-edit"></i>
         </button>
-        <button class="btn-icon" onclick="deleteProduct('${escapeHTML(product.id)}')" style="color: var(--danger);" title="Delete">
+        <button class="btn-icon" onclick="confirmDeleteProduct('${escapeHTML(product.id)}')" style="color: var(--danger);" title="Delete">
           <i class="fas fa-trash"></i>
         </button>
       </td>
@@ -246,6 +256,7 @@ function filterProducts() {
   `).join('');
 }
 
+// Render orders table
 // Render orders table
 function renderOrdersTable() {
   const tbody = document.getElementById('ordersTableBody');
@@ -257,13 +268,13 @@ function renderOrdersTable() {
 
   tbody.innerHTML = allOrders.map(order => `
     <tr>
-      <td><strong>${escapeHTML(order.local_order_id || order.id)}</strong></td>
-      <td>${escapeHTML(order.customer_name || '-')}</td>
-      <td>${escapeHTML(order.phone || '-')}</td>
+      <td><strong>${escapeHTML(order.local_order_id || String(order.id))}</strong></td>
+      <td>${escapeHTML(String(order.customer_name || '-'))}</td>
+      <td>${escapeHTML(String(order.phone || '-'))}</td>
       <td>${Array.isArray(order.items) ? order.items.length : 0} items</td>
       <td>${formatPrice(order.total || 0)}</td>
       <td>
-        <select class="status-select" onchange="updateOrderStatusInline(${order.id}, this.value)">
+        <select class="status-select" onchange="updateOrderStatusInline('${order.id}', this.value)">
           <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
           <option value="confirmed" ${order.status === 'confirmed' ? 'selected' : ''}>Confirmed</option>
           <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>Shipped</option>
@@ -271,14 +282,92 @@ function renderOrdersTable() {
           <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
         </select>
       </td>
-      <td>${new Date(order.created_at).toLocaleDateString()}</td>
+      <td>${order.created_at ? new Date(order.created_at).toLocaleDateString() : '-'}</td>
       <td>
-        <button class="btn-icon" onclick="viewOrderDetails(${order.id})" title="View">
+        <button class="btn-icon" onclick="viewOrderDetails('${order.id}')" title="View">
           <i class="fas fa-eye"></i>
         </button>
       </td>
     </tr>
   `).join('');
+}
+
+// View order details
+async function viewOrderDetails(orderId) {
+  const order = allOrders.find(o => String(o.id) === String(orderId));
+  if (!order) return;
+
+  const modal = document.getElementById('orderModal');
+  const body = document.getElementById('orderModalBody');
+  document.getElementById('orderModalId').textContent = `Order: ${order.local_order_id || order.id}`;
+
+  const itemsHTML = Array.isArray(order.items) ? order.items.map(item => `
+    <tr>
+      <td>${escapeHTML(item.name)}</td>
+      <td>${item.qty} x ${formatPrice(item.price)}</td>
+      <td style="text-align: right;">${formatPrice(item.price * item.qty)}</td>
+    </tr>
+  `).join('') : '<tr><td colspan="3">No items found</td></tr>';
+
+  body.innerHTML = `
+    <div class="order-details-grid" style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 2rem;">
+      <div class="customer-info">
+        <h4>Customer Information</h4>
+        <p><strong>Name:</strong> ${escapeHTML(order.customer_name || '-')}</p>
+        <p><strong>Phone:</strong> ${escapeHTML(order.phone || '-')}</p>
+        <p><strong>Email:</strong> ${escapeHTML(order.email || '-')}</p>
+        <p><strong>Address:</strong> ${escapeHTML(order.address || '-')}</p>
+        <p><strong>City:</strong> ${escapeHTML(order.city || '-')}</p>
+        <p><strong>Notes:</strong> ${escapeHTML(order.notes || '-')}</p>
+      </div>
+      <div class="order-items">
+        <h4>Order Summary</h4>
+        <table style="width: 100%; border-collapse: collapse;">
+          <thead style="border-bottom: 2px solid #eee;">
+            <th style="text-align: left; padding: 0.5rem 0;">Item</th>
+            <th style="text-align: left; padding: 0.5rem 0;">Qty</th>
+            <th style="text-align: right; padding: 0.5rem 0;">Price</th>
+          </thead>
+          <tbody>
+            ${itemsHTML}
+          </tbody>
+          <tfoot style="border-top: 2px solid #eee; font-weight: bold;">
+            <tr>
+              <td colspan="2" style="padding: 0.5rem 0;">Subtotal</td>
+              <td style="text-align: right;">${formatPrice(order.subtotal || 0)}</td>
+            </tr>
+            <tr>
+              <td colspan="2" style="padding: 0.5rem 0;">Shipping</td>
+              <td style="text-align: right;">${formatPrice(order.shipping || 0)}</td>
+            </tr>
+            <tr>
+              <td colspan="2" style="color: var(--primary); padding: 0.5rem 0;">Total</td>
+              <td style="text-align: right; color: var(--primary); font-size: 1.2rem;">${formatPrice(order.total || 0)}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  `;
+
+  modal.style.display = 'flex';
+}
+
+function closeOrderModal() {
+  document.getElementById('orderModal').style.display = 'none';
+}
+
+// Update order status inline
+async function updateOrderStatusInline(orderId, status) {
+  try {
+    showToast('Updating status...', 'info');
+    await updateOrderStatus(orderId, status);
+    showToast('Status updated!', 'success');
+    await loadDashboardData();
+  } catch (error) {
+    showToast('Update failed', 'error');
+    console.error(error);
+  }
 }
 
 // Filter orders
@@ -295,7 +384,7 @@ function filterOrders() {
       <td>${Array.isArray(order.items) ? order.items.length : 0} items</td>
       <td>${formatPrice(order.total || 0)}</td>
       <td>
-        <select class="status-select" onchange="updateOrderStatusInline(${order.id}, this.value)">
+        <select class="status-select" onchange="updateOrderStatusInline('${order.id}', this.value)">
           <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
           <option value="confirmed" ${order.status === 'confirmed' ? 'selected' : ''}>Confirmed</option>
           <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>Shipped</option>
@@ -305,7 +394,7 @@ function filterOrders() {
       </td>
       <td>${new Date(order.created_at).toLocaleDateString()}</td>
       <td>
-        <button class="btn-icon" onclick="viewOrderDetails(${order.id})" title="View">
+        <button class="btn-icon" onclick="viewOrderDetails('${order.id}')" title="View">
           <i class="fas fa-eye"></i>
         </button>
       </td>

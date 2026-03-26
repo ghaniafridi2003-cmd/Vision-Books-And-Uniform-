@@ -236,14 +236,6 @@ async function submitCheckout(event) {
   }, 1000);
 }
 
-// Internal helper (kept for safety, but primary is in supabase-client.js)
-async function saveOrderToSupabase(order) {
-  if (typeof createOrderInSupabase === 'function') {
-    return createOrderInSupabase(order);
-  }
-  return null;
-}
-
 // Get order by ID
 function getOrderById(orderId) {
   const orders = JSON.parse(localStorage.getItem('visionbooks_orders') || '[]');

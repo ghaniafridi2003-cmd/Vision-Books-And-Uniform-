@@ -122,7 +122,7 @@ const CONFIG = {
 
   // Site Settings
   site: {
-    baseURL: '/vision-shop/', // GitHub Pages base URL
+    baseURL: '/Vision-Books-And-Uniform-/', // GitHub Pages base URL
     productsPerPage: 12,
     enableReviews: true,
     enableWishlist: true,

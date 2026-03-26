@@ -1758,3 +1758,41 @@ section:nth-child(even) {
     top: var(--space-md);
   }
 }
+/* ================================
+   SKELETON LOADERS
+   ================================ */
+.skeleton {
+  background: linear-gradient(90deg, var(--gray-200) 25%, var(--gray-100) 50%, var(--gray-200) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: var(--border-radius);
+}
+
+@keyframes skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.skeleton-card {
+  height: 400px;
+  width: 100%;
+  border-radius: var(--border-radius-lg);
+  margin-bottom: var(--space-lg);
+}
+
+.loader-overlay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-3xl) 0;
+  width: 100%;
+  grid-column: 1 / -1;
+}
+
+.loader-icon {
+  font-size: 3rem;
+  color: var(--accent);
+  margin-bottom: var(--space-md);
+  animation: spin 1s linear infinite;
+}

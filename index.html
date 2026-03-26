@@ -10,6 +10,20 @@
 
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://ghaniafridi2003-cmd.github.io/Vision-Books-And-Uniform-/">
+  <meta property="og:title" content="Visionbooks & Uniform – Books, Stationery, Gifts & Uniforms">
+  <meta property="og:description" content="Pakistan's premier online store for Books, Stationery, Gifts & School Uniforms. Quality products at affordable prices.">
+  <meta property="og:image" content="https://ghaniafridi2003-cmd.github.io/Vision-Books-And-Uniform-/images/og-image.jpg">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://ghaniafridi2003-cmd.github.io/Vision-Books-And-Uniform-/">
+  <meta property="twitter:title" content="Visionbooks & Uniform – Books, Stationery, Gifts & Uniforms">
+  <meta property="twitter:description" content="Pakistan's premier online store for Books, Stationery, Gifts & School Uniforms. Quality products at affordable prices.">
+  <meta property="twitter:image" content="https://ghaniafridi2003-cmd.github.io/Vision-Books-And-Uniform-/images/og-image.jpg">
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -568,9 +582,17 @@
 
       // Load featured products from Supabase
       try {
+        const container = document.getElementById('featuredProducts');
+        // Set initial loading state
+        container.innerHTML = `
+          <div class="loader-overlay">
+            <div class="loader-icon"><i class="fas fa-circle-notch"></i></div>
+            <p>Fetching amazing products...</p>
+          </div>
+        `;
+        
         const featuredProducts = await loadAllProducts();
         const featured = featuredProducts.filter(p => p.featured).slice(0, 8);
-        const container = document.getElementById('featuredProducts');
         container.innerHTML = featured.map(p => generateProductCard(p)).join('');
       } catch (error) {
         console.error('Error loading products:', error);
