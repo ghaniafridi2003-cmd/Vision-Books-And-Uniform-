@@ -246,15 +246,20 @@
       
       const form = event.target;
       const name = document.getElementById('contactName').value;
+      const email = document.getElementById('contactEmail').value;
+      const subject = document.getElementById('contactSubject').value;
+      const message = document.getElementById('contactMessage').value;
       
       setFormLoading(form, true);
       
-      // Simulate form submission
+      // Open email client via mailto
       setTimeout(() => {
         setFormLoading(form, false);
-        showToast(`Thank you, ${name}! Your message has been sent.`, 'success');
+        const body = `Name: ${name}%0D%0AEmail: ${email}%0D%0A%0D%0A${encodeURIComponent(message)}`;
+        window.location.href = `mailto:${CONFIG.store.email}?subject=${encodeURIComponent(subject)}&body=${body}`;
+        showToast(`Opening your email client...`, 'success');
         form.reset();
-      }, 1500);
+      }, 800);
     }
   </script>
 </body>

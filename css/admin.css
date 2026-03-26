@@ -804,3 +804,51 @@ body {
     min-width: auto;
   }
 }
+
+/* ==================== PRINT STYLES ==================== */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  
+  #orderModal, #orderModal * {
+    visibility: visible;
+  }
+  
+  #orderModal {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: auto;
+    background: white;
+    padding: 0;
+    margin: 0;
+    overflow: visible;
+    display: block !important;
+  }
+  
+  .modal-content {
+    box-shadow: none;
+    max-width: none;
+    width: 100%;
+    border: none;
+    height: auto;
+    overflow: visible;
+  }
+  
+  .modal-header .modal-close,
+  .modal-footer {
+    display: none !important;
+  }
+  
+  .modal-header h3 {
+    text-align: center;
+    width: 100%;
+    margin-bottom: 2rem;
+  }
+  
+  .order-details-grid {
+    display: block !important;
+  }
+}
