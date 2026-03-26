@@ -3,12 +3,21 @@
  * Database connection for Visionbooks & Uniform
  */
 
-// Your Supabase credentials
-const SUPABASE_URL = 'https://vagttrkoefdymqvipzlz.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZhZ3R0cmtvZWZkeW1xdmlwemx6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxNjY2OTgsImV4cCI6MjA4OTc0MjY5OH0.Al8xgc0PEXHn5bHlEtTAIAeisFpC1YHdGEDd_Km0BlQ';
+// Your Supabase credentials (now pulled from private js/env.js)
+const SUPABASE_URL = window.ENV?.SUPABASE_URL || 'YOUR_SUPABASE_URL_HERE';
+const SUPABASE_ANON_KEY = window.ENV?.SUPABASE_ANON_KEY || 'YOUR_SUPABASE_ANON_KEY_HERE';
 
 // Initialize Supabase client
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+let supabaseClient;
+try {
+  if (SUPABASE_URL !== 'YOUR_SUPABASE_URL_HERE' && SUPABASE_ANON_KEY !== 'YOUR_SUPABASE_ANON_KEY_HERE') {
+    supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  } else {
+    console.warn('Supabase credentials missing. Please set them in js/env.js');
+  }
+} catch (e) {
+  console.error('Failed to initialize Supabase:', e);
+}
 
 /**
  * PRODUCTS - Fetch from Supabase
@@ -176,7 +185,7 @@ async function updateOrderStatus(orderId, newStatus) {
 }
 
 /**
- * ADMIN AUTH - Use Supabase Auth for security
+ * ADMIN AUTH - Using Supabase Auth for security
  */
 async function adminLogin(email, password) {
   try {
@@ -190,11 +199,7 @@ async function adminLogin(email, password) {
       return false;
     }
 
-    if (data.user) {
-      // Session is handled automatically by Supabase client (in cookies/localStorage)
-      return true;
-    }
-    return false;
+    return !!data.user;
   } catch (error) {
     console.error('Authentication exception:', error);
     return false;
@@ -203,13 +208,17 @@ async function adminLogin(email, password) {
 
 async function isAdminLoggedIn() {
   // Check Supabase session
+  if (!supabaseClient) return false;
   const { data: { session } } = await supabaseClient.auth.getSession();
   return !!session;
 }
 
 async function adminLogout() {
   try {
-    await supabaseClient.auth.signOut();
+    if (supabaseClient) {
+      await supabaseClient.auth.signOut();
+    }
+    localStorage.removeItem('admin_logged_in'); // Clean up old legacy key
   } catch (error) {
     console.error('Logout error:', error);
   }

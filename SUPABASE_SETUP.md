@@ -174,9 +174,8 @@ VALUES
 ## 🔄 Step 4: Test the Connection
 
 1. **Open your admin panel:** `your-site-url/admin.html`
-2. **Login** with credentials (default: `admin@vision.pk` / `admin123`)
+2. **Login** with your configured credentials in `js/env.js`
 3. **Click "Sync Database"** to fetch products from Supabase
-4. **Add a test product** to verify insert works
 5. **Check the "Orders" section** after placing a test order on your site
 
 ---
@@ -225,6 +224,7 @@ supabaseClient
   })
   .subscribe();
 ```
+- Your Supabase project already exists (credentials will be configured in `js/env.js`)
 
 ---
 
@@ -232,10 +232,13 @@ supabaseClient
 
 ### **1. Change Default Admin Password**
 
-In `js/supabase-client.js`, change:
+Use the `js/env.js` file to set your unique admin credentials:
 ```javascript
-const ADMIN_EMAIL = 'admin@vision.pk';
-const ADMIN_PASSWORD = 'admin123';  // CHANGE THIS!
+window.ENV = {
+  // ... your keys
+  ADMIN_EMAIL: 'your-email@example.com',
+  ADMIN_PASSWORD: 'your-secure-password'
+};
 ```
 
 ### **2. Use Environment Variables (For Production)**

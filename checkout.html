@@ -1,20 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <base href="/Vision-Books-And-Uniform-/">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Checkout – Visionbooks & Uniform</title>
-  <meta name="description" content="Secure checkout for your Visionbooks & Uniform order. Enter your delivery details to complete your purchase of books, stationery, and uniforms.">
+  <meta name="description"
+    content="Secure checkout for your Visionbooks & Uniform order. Enter your delivery details to complete your purchase of books, stationery, and uniforms.">
 
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>">
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/checkout.css">
 </head>
+
 <body>
 
   <div class="page-loader" id="pageLoader">
@@ -51,7 +57,8 @@
 
       <!-- Empty Checkout -->
       <div id="emptyCheckout" style="display: none; text-align: center; padding: var(--space-3xl);">
-        <i class="fas fa-shopping-cart" style="font-size: 5rem; color: var(--gray-400); margin-bottom: var(--space-xl);"></i>
+        <i class="fas fa-shopping-cart"
+          style="font-size: 5rem; color: var(--gray-400); margin-bottom: var(--space-xl);"></i>
         <h2>Your cart is empty</h2>
         <p style="color: var(--gray-600); margin-bottom: var(--space-xl);">Add some products before checking out</p>
         <a href="products.html" class="btn btn-primary">
@@ -86,7 +93,7 @@
 
               <div class="form-section">
                 <h3><i class="fas fa-user"></i> Customer Information</h3>
-                
+
                 <div class="form-group">
                   <label for="fullName">Full Name *</label>
                   <input type="text" id="fullName" required placeholder="Enter your full name">
@@ -139,7 +146,7 @@
 
               <div class="form-section">
                 <h3><i class="fas fa-credit-card"></i> Payment Method</h3>
-                
+
                 <div class="payment-options">
                   <label class="payment-option">
                     <input type="radio" name="paymentMethod" value="cod" checked>
@@ -158,8 +165,8 @@
                   <div>
                     <strong>How it works:</strong>
                     <p>1. Complete this form and place your order<br>
-                    2. We will contact you to confirm delivery details<br>
-                    3. Pay cash when your order is delivered</p>
+                      2. We will contact you to confirm delivery details<br>
+                      3. Pay cash when your order is delivered</p>
                   </div>
                 </div>
               </div>
@@ -167,7 +174,8 @@
               <div class="form-section">
                 <h3><i class="fas fa-comment"></i> Order Notes (Optional)</h3>
                 <div class="form-group">
-                  <textarea id="notes" rows="3" placeholder="Any special instructions? (e.g., preferred delivery time, school name for uniforms, gift wrapping request)"></textarea>
+                  <textarea id="notes" rows="3"
+                    placeholder="Any special instructions? (e.g., preferred delivery time, school name for uniforms, gift wrapping request)"></textarea>
                 </div>
               </div>
 
@@ -175,7 +183,8 @@
                 <i class="fas fa-check-circle"></i> Place Order Now
               </button>
 
-              <div style="text-align: center; margin-top: var(--space-md); font-size: var(--text-sm); color: var(--gray-600);">
+              <div
+                style="text-align: center; margin-top: var(--space-md); font-size: var(--text-sm); color: var(--gray-600);">
                 <i class="fas fa-shield-alt"></i> Your information is secure and will only be used for order processing
               </div>
 
@@ -243,6 +252,7 @@
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="js/env.js"></script>
   <script src="js/config.js"></script>
   <script src="js/supabase-client.js"></script>
   <script src="js/products.js"></script>
@@ -252,4 +262,5 @@
   <script src="js/checkout.js"></script>
 
 </body>
+
 </html>

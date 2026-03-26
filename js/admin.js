@@ -563,6 +563,11 @@ function loadSettings() {
   document.getElementById('settingWhatsApp').textContent = CONFIG.store.whatsapp;
   document.getElementById('settingFreeShipping').textContent = formatPrice(CONFIG.shipping.freeShippingThreshold);
   document.getElementById('settingDeliveryFee').textContent = formatPrice(CONFIG.shipping.deliveryFee);
+  
+  const sbUrl = document.getElementById('settingSupabaseUrl');
+  if (sbUrl) {
+    sbUrl.textContent = window.ENV?.SUPABASE_URL || 'Not Configured';
+  }
 }
 
 // Toast notifications

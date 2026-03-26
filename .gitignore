@@ -1,0 +1,14 @@
+# Dependency directories
+node_modules/
+
+# Local environment files (SENSITIVE - Private keys go here)
+js/env.js
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS Files
+.DS_Store
+Thumbs.db

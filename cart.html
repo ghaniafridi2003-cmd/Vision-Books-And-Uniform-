@@ -1,20 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <base href="/Vision-Books-And-Uniform-/">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shopping Cart – Visionbooks & Uniform</title>
-  <meta name="description" content="Review items in your shopping cart. Visionbooks & Uniform offers books, stationery, gifts and uniforms with fast delivery across Pakistan.">
+  <meta name="description"
+    content="Review items in your shopping cart. Visionbooks & Uniform offers books, stationery, gifts and uniforms with fast delivery across Pakistan.">
 
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>">
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/cart.css">
 </head>
+
 <body>
 
   <div class="page-loader" id="pageLoader">
@@ -66,7 +72,8 @@
 
       <!-- Empty Cart -->
       <div id="emptyCart" style="display: none; text-align: center; padding: var(--space-3xl);">
-        <i class="fas fa-shopping-cart" style="font-size: 5rem; color: var(--gray-400); margin-bottom: var(--space-xl);"></i>
+        <i class="fas fa-shopping-cart"
+          style="font-size: 5rem; color: var(--gray-400); margin-bottom: var(--space-xl);"></i>
         <h2>Your cart is empty</h2>
         <p style="color: var(--gray-600); margin-bottom: var(--space-xl);">Add some products to get started!</p>
         <a href="products.html" class="btn btn-primary">
@@ -101,7 +108,7 @@
           <!-- Cart Summary -->
           <div class="cart-summary">
             <h3>Order Summary</h3>
-            
+
             <div class="summary-row">
               <span>Subtotal:</span>
               <span id="summarySubtotal">Rs. 0</span>
@@ -119,14 +126,16 @@
 
             <div class="shipping-info">
               <i class="fas fa-truck"></i>
-              <span id="shippingMessage">Add Rs. <strong id="shippingThreshold">0</strong> more for FREE delivery!</span>
+              <span id="shippingMessage">Add Rs. <strong id="shippingThreshold">0</strong> more for FREE
+                delivery!</span>
             </div>
 
             <button class="btn btn-primary btn-block" onclick="window.location.href='checkout.html'">
               <i class="fas fa-lock"></i> Proceed to Checkout
             </button>
 
-            <div style="margin-top: var(--space-lg); text-align: center; font-size: var(--text-sm); color: var(--gray-600);">
+            <div
+              style="margin-top: var(--space-lg); text-align: center; font-size: var(--text-sm); color: var(--gray-600);">
               <i class="fas fa-shield-alt"></i> Secure Checkout | Cash on Delivery Available
             </div>
           </div>
@@ -153,6 +162,7 @@
   <a href="#" class="whatsapp-btn" id="whatsappFloatBtn" target="_blank"><i class="fab fa-whatsapp"></i></a>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="js/env.js"></script>
   <script src="js/config.js"></script>
   <script src="js/supabase-client.js"></script>
   <script src="js/products.js"></script>
@@ -162,4 +172,5 @@
   <script src="js/cart-page.js"></script>
 
 </body>
+
 </html>

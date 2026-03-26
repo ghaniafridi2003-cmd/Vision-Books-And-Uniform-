@@ -28,7 +28,7 @@
       <form id="loginForm" onsubmit="handleLogin(event)">
         <div class="form-group">
           <label><i class="fas fa-envelope"></i> Email</label>
-          <input type="email" id="loginEmail" placeholder="admin@vision.pk" required>
+          <input type="email" id="loginEmail" placeholder="your-email@example.com" required>
         </div>
         <div class="form-group">
           <label><i class="fas fa-lock"></i> Password</label>
@@ -261,7 +261,7 @@
 
         <div class="settings-card">
           <h3><i class="fas fa-database"></i> Database</h3>
-          <p><strong>Supabase URL:</strong> https://vagttrkoefdymqvipzlz.supabase.co</p>
+          <p><strong>Supabase URL:</strong> <span id="settingSupabaseUrl">Loading...</span></p>
           <p><strong>Status:</strong> <span class="badge badge-success">Connected</span></p>
           <button class="btn btn-primary" onclick="syncWithSupabase()">
             <i class="fas fa-sync"></i> Sync Now
@@ -405,6 +405,7 @@
 
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="js/env.js"></script>
   <script src="js/config.js"></script>
   <script src="js/products.js"></script>
   <script src="js/supabase-client.js"></script>
