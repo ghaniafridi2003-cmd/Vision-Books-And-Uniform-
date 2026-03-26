@@ -402,26 +402,7 @@ function filterOrders() {
   `).join('');
 }
 
-// Update order status inline
-async function updateOrderStatusInline(orderId, newStatus) {
-  try {
-    await updateOrderStatus(orderId, newStatus);
-    showToast('Order status updated', 'success');
-    await loadDashboardData();
-  } catch (error) {
-    const errorMsg = error.message || 'Unknown database error';
-    showToast(`Error: ${errorMsg}`, 'error');
-    console.error('Detailed Debug Error:', error);
-  }
-}
 
-// View order details
-function viewOrderDetails(orderId) {
-  const order = allOrders.find(o => o.id === orderId);
-  if (!order) return;
-
-  alert(`Order Details:\n\nID: ${order.local_order_id || order.id}\nCustomer: ${order.customer_name}\nPhone: ${order.phone}\nTotal: ${formatPrice(order.total)}\nStatus: ${order.status}`);
-}
 
 // Open product modal
 function openProductModal(productId = null) {
