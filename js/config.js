@@ -10,8 +10,8 @@ const CONFIG = {
     name: 'Visionbooks & Uniform',
     tagline: 'Books · Stationery · Gifts · Uniforms',
     description: 'Pakistan\'s trusted online store for books, stationery, gifts and uniforms. Quality products at affordable prices with fast delivery across Pakistan.',
-    phone: '0334-3427666',
-    whatsapp: '923343427666', // No + or spaces
+    phone: '0325-9711550',
+    whatsapp: '923259711550', // No + or spaces
     email: 'info@vision.pk',
     address: 'Shop #12, Board Bazar, Peshawar, Pakistan',
     hours: {
@@ -47,7 +47,7 @@ const CONFIG = {
     instagram: '#',
     twitter: '#',
     youtube: '#',
-    whatsapp: 'https://wa.me/923343427666?text=Hello!%20I%20want%20to%20inquire%20about%20your%20products.'
+    whatsapp: 'https://wa.me/923259711550?text=Hello!%20I%20want%20to%20inquire%20about%20your%20products.'
   },
 
   // Categories & Subcategories
