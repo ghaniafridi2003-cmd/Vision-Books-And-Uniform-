@@ -277,14 +277,10 @@ function showWhatsAppConfirmation(order) {
 
   document.body.appendChild(overlay);
 
-  // Auto-open WhatsApp with a small delay
+  // Redirect to confirmation page with small delay
   setTimeout(() => {
-    try {
-      window.open(waURL, '_blank');
-    } catch (e) {
-      console.warn('Popup blocked, user will click the link');
-    }
-  }, 500);
+    window.location.href = `order-confirmation.html?orderId=${orderId}`;
+  }, 1500);
 }
 
 // Retry WhatsApp
@@ -331,16 +327,23 @@ async function submitCheckout(event) {
         });
       }
 
+      // Clear cart
+      clearCart();
+
       setFormLoading(form, false);
-      showToast('Order placed! Please confirm via WhatsApp.', 'success');
-      showWhatsAppConfirmation(order);
+      showToast('Order placed successfully!', 'success');
+      
+      // Redirect directly to confirmation page
+      setTimeout(() => {
+        window.location.href = `order-confirmation.html?orderId=${order.id}`;
+      }, 500);
       
     } catch (error) {
       console.error('Checkout error:', error);
-      setFormLoading(form, false);
+      if (form) setFormLoading(form, false);
       showToast('Something went wrong. Please try again.', 'error');
     }
-  }, 800);
+  }, 1000);
 }
 
 // Internal helper (kept for safety, but primary is in supabase-client.js)

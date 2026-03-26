@@ -164,7 +164,7 @@ async function updateOrderStatus(orderId, status) {
     const { data, error } = await supabaseClient
       .from('orders')
       .update({ status: newStatus })
-      .eq('local_order_id', orderId)
+      .eq('id', orderId)
       .select();
 
     if (error) throw error;
