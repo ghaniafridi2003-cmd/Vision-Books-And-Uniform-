@@ -4,7 +4,10 @@
  */
 
 // Initialize checkout page
-function initializeCheckout() {
+async function initializeCheckout() {
+  // Load products from Supabase into cache
+  await loadAllProducts();
+
   const cart = getCart();
   const checkoutLayout = document.getElementById('checkoutLayout');
   const emptyCheckout = document.getElementById('emptyCheckout');
@@ -249,5 +252,7 @@ function getOrderById(orderId) {
 
 // Initialize on page load
 if (document.getElementById('checkoutForm')) {
-  document.addEventListener('DOMContentLoaded', initializeCheckout);
+  document.addEventListener('DOMContentLoaded', async () => {
+    await initializeCheckout();
+  });
 }

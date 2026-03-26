@@ -240,32 +240,20 @@
         return;
       }
 
-      await loadProduct(productId);
-    });
+      // Load all products into cache
+      await loadAllProducts();
+      
+      // Get product from cache
+      currentProduct = getProductById(productId);
 
-    async function loadProduct(productId) {
-      try {
-        // Try Supabase first
-        const products = await fetchProductsFromSupabase();
-        currentProduct = products.find(p => String(p.id) === String(productId));
-
-        // Fallback to local products
-        if (!currentProduct) {
-          currentProduct = getProductById(productId);
-        }
-
-        if (!currentProduct) {
-          showToast('Product not found', 'error');
-          setTimeout(() => window.location.href = 'products.html', 1500);
-          return;
-        }
-
-        renderProduct();
-      } catch (error) {
-        console.error('Error loading product:', error);
-        showToast('Error loading product', 'error');
+      if (!currentProduct) {
+        showToast('Product not found', 'error');
+        setTimeout(() => window.location.href = 'products.html', 1500);
+        return;
       }
-    }
+
+      renderProduct();
+    });
 
     function renderProduct() {
       document.getElementById('productTitle').textContent = currentProduct.name;

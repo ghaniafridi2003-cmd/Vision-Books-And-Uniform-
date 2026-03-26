@@ -320,26 +320,30 @@ const SAMPLE_PRODUCTS = [
   }
 ];
 
+// Global cache for products
+let globalProducts = [];
+
 // Functions to get products
 async function loadAllProducts() {
   try {
     // Try to fetch from Supabase first
     const supabaseProducts = await fetchProductsFromSupabase();
     if (supabaseProducts && supabaseProducts.length > 0) {
-      return supabaseProducts;
+      globalProducts = supabaseProducts;
+      return globalProducts;
     }
   } catch (error) {
     console.warn('Supabase fetch failed, using local products:', error);
   }
   
-  // Fallback to sample products
-  return SAMPLE_PRODUCTS;
+  // Fallback to sample products if Supabase fails or is empty
+  globalProducts = SAMPLE_PRODUCTS;
+  return globalProducts;
 }
 
 function getAllProducts() {
-  // This is synchronous fallback for immediate needs
-  // For best results, use loadAllProducts() which is async
-  return SAMPLE_PRODUCTS;
+  // Return cached products if available, otherwise fallback to sample
+  return globalProducts.length > 0 ? globalProducts : SAMPLE_PRODUCTS;
 }
 
 function getProductById(id) {

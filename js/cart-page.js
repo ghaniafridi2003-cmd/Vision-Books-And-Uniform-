@@ -3,12 +3,15 @@
  * Handles cart display and management
  */
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
   // Update config data
   document.getElementById('storeName').textContent = CONFIG.store.name;
   document.getElementById('storeTagline').textContent = CONFIG.store.tagline;
   document.getElementById('footerCopyright').textContent = CONFIG.store.name;
   document.getElementById('whatsappFloatBtn').href = CONFIG.social.whatsapp;
+
+  // Load products from Supabase
+  await loadAllProducts();
 
   // Render cart
   renderCartItems();
