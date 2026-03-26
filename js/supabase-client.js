@@ -159,7 +159,7 @@ async function createOrderInSupabase(order) {
 /**
  * ORDERS - Update status
  */
-async function updateOrderStatus(orderId, status) {
+async function updateOrderStatus(orderId, newStatus) {
   try {
     const { data, error } = await supabaseClient
       .from('orders')
