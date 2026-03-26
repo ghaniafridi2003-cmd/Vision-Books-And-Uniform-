@@ -176,25 +176,41 @@ async function updateOrderStatus(orderId, newStatus) {
 }
 
 /**
- * ADMIN AUTH - Simple check (for demo, use Supabase Auth in production)
+ * ADMIN AUTH - Use Supabase Auth for security
  */
 async function adminLogin(email, password) {
-  // For now, hardcoded admin credentials
-  // In production, use Supabase Auth or a proper auth system
-  const ADMIN_EMAIL = 'admin@vision.pk';
-  const ADMIN_PASSWORD = 'admin123';  // CHANGE THIS!
+  try {
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+      email: email,
+      password: password,
+    });
 
-  if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-    localStorage.setItem('admin_logged_in', 'true');
-    return true;
+    if (error) {
+      console.error('Login error:', error.message);
+      return false;
+    }
+
+    if (data.user) {
+      // Session is handled automatically by Supabase client (in cookies/localStorage)
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.error('Authentication exception:', error);
+    return false;
   }
-  return false;
 }
 
-function isAdminLoggedIn() {
-  return localStorage.getItem('admin_logged_in') === 'true';
+async function isAdminLoggedIn() {
+  // Check Supabase session
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  return !!session;
 }
 
-function adminLogout() {
-  localStorage.removeItem('admin_logged_in');
+async function adminLogout() {
+  try {
+    await supabaseClient.auth.signOut();
+  } catch (error) {
+    console.error('Logout error:', error);
+  }
 }

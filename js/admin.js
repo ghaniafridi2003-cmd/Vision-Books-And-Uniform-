@@ -9,8 +9,8 @@ let currentEditingProduct = null;
 
 // Initialize admin dashboard
 document.addEventListener('DOMContentLoaded', async function() {
-  // Check if admin is logged in
-  if (isAdminLoggedIn()) {
+  // Check if admin is logged in via Supabase Auth
+  if (await isAdminLoggedIn()) {
     showDashboard();
     await loadDashboardData();
   } else {
@@ -48,9 +48,9 @@ async function handleLogin(event) {
 }
 
 // Handle logout
-function handleLogout() {
+async function handleLogout() {
   if (confirm('Are you sure you want to logout?')) {
-    adminLogout();
+    await adminLogout();
     showLogin();
   }
 }
