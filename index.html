@@ -38,7 +38,7 @@
     <div class="container">
       <div class="top-bar-left">
         <span><i class="fas fa-truck"></i> Free delivery on orders above Rs. 2,000</span>
-        <span><i class="fas fa-phone"></i> 0334-3427666</span>
+        <span><i class="fas fa-phone"></i> <span id="topBarPhone">0325-9711550</span></span>
       </div>
       <div class="top-bar-marquee">
         <span id="announcementMarquee"></span>
@@ -549,6 +549,7 @@
       document.getElementById('footerDescription').textContent = CONFIG.store.description;
       document.getElementById('footerAddress').textContent = CONFIG.store.address;
       document.getElementById('footerPhone').textContent = CONFIG.store.phone;
+      document.getElementById('topBarPhone').textContent = CONFIG.store.phone;
       document.getElementById('footerEmail').textContent = CONFIG.store.email;
       document.getElementById('footerHoursWeekdays').textContent = CONFIG.store.hours.weekdays;
       document.getElementById('footerHoursWeekend').textContent = CONFIG.store.hours.weekend;
