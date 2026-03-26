@@ -197,7 +197,7 @@ function renderProductsTable() {
   tbody.innerHTML = allProducts.map(product => `
     <tr>
       <td>
-        <img src="${product.image}" alt="${escapeHTML(product.name)}" style="width: 40px; height: 40px; border-radius: 4px; object-fit: cover;">
+        <img src="${product.image}" alt="${escapeHTML(product.name)}" style="width: 40px; height: 40px; border-radius: 4px; object-fit: cover;" loading="lazy">
       </td>
       <td><strong>${escapeHTML(product.name)}</strong></td>
       <td><span class="badge badge-secondary">${escapeHTML(product.category)}</span></td>
@@ -233,7 +233,7 @@ function filterProducts() {
   tbody.innerHTML = filtered.map(product => `
     <tr>
       <td>
-        <img src="${product.image}" alt="${escapeHTML(product.name)}" style="width: 40px; height: 40px; border-radius: 4px; object-fit: cover;">
+        <img src="${product.image}" alt="${escapeHTML(product.name)}" style="width: 40px; height: 40px; border-radius: 4px; object-fit: cover;" loading="lazy">
       </td>
       <td><strong>${escapeHTML(product.name)}</strong></td>
       <td><span class="badge badge-secondary">${escapeHTML(product.category)}</span></td>

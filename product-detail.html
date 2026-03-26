@@ -323,6 +323,37 @@
 
       // Set max quantity
       document.getElementById('qtyInput').max = currentProduct.stock;
+
+      // Add JSON-LD Product Schema for SEO
+      const schemaScript = document.createElement('script');
+      schemaScript.type = 'application/ld+json';
+      schemaScript.text = JSON.stringify({
+        "@context": "https://schema.org/",
+        "@type": "Product",
+        "name": currentProduct.name,
+        "image": currentProduct.image,
+        "description": currentProduct.description || "Premium product from Visionbooks & Uniform.",
+        "sku": currentProduct.id,
+        "offers": {
+          "@type": "Offer",
+          "url": window.location.href,
+          "priceCurrency": "PKR",
+          "price": currentProduct.price,
+          "availability": currentProduct.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+          "itemCondition": "https://schema.org/NewCondition"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": currentProduct.rating || 5,
+          "reviewCount": currentProduct.reviews || 1
+        }
+      });
+      // Remove any existing product schema if present (for SPA navigation)
+      const existingProductSchema = document.querySelector('script[type="application/ld+json"][id="dynamicProductSchema"]');
+      if (existingProductSchema) existingProductSchema.remove();
+      
+      schemaScript.id = 'dynamicProductSchema';
+      document.head.appendChild(schemaScript);
     }
 
     function increaseQty() {

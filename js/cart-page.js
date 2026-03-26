@@ -41,7 +41,7 @@ function renderCartItems() {
 
     html += `
       <div class="cart-item">
-        <img src="${item.image}" alt="${escapeHTML(item.name)}" class="cart-item-image">
+        <img src="${item.image}" alt="${escapeHTML(item.name)}" class="cart-item-image" loading="lazy">
         
         <div class="cart-item-details">
           <h4>${escapeHTML(item.name)}</h4>
