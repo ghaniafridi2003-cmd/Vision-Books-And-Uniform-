@@ -6,17 +6,33 @@
 // Initialize checkout page
 function initializeCheckout() {
   const cart = getCart();
+  const checkoutLayout = document.getElementById('checkoutLayout');
+  const emptyCheckout = document.getElementById('emptyCheckout');
 
   if (cart.length === 0) {
-    showEmptyCheckout();
+    if (checkoutLayout) checkoutLayout.style.display = 'none';
+    if (emptyCheckout) emptyCheckout.style.display = 'block';
     return;
   }
+
+  // Show checkout layout and hide empty message
+  if (checkoutLayout) checkoutLayout.style.display = 'grid'; // Grid because it uses a grid layout
+  if (emptyCheckout) emptyCheckout.style.display = 'none';
 
   renderOrderSummary(cart);
   updateCartBadge();
   
   // Pre-fill form if user data exists
   prefillCustomerInfo();
+
+  // Set estimated delivery date
+  const deliveryEstimate = document.getElementById('deliveryEstimate');
+  if (deliveryEstimate) {
+    const today = new Date();
+    const futureDate = new Date();
+    futureDate.setDate(today.getDate() + 4); // ~4 days
+    deliveryEstimate.textContent = formatDate(futureDate);
+  }
 }
 
 // Show empty checkout message
@@ -216,6 +232,23 @@ function showWhatsAppConfirmation(order) {
 
   const overlay = document.createElement('div');
   overlay.id = 'waConfirmOverlay';
+  
+  // CRITICAL: Added styles to ensure it covers the screen and centers the content
+  overlay.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+  `;
+
   overlay.innerHTML = `
     <div class="wa-confirm-modal">
       <div class="wa-confirm-icon">
@@ -224,17 +257,19 @@ function showWhatsAppConfirmation(order) {
       <h2>One Last Step!</h2>
       <p>Your order details are ready. Send them to us on WhatsApp to confirm your order.</p>
       <div class="wa-order-info">
-        <div><strong>Order ID:</strong> ${order.id}</div>
-        <div><strong>Total:</strong> ${formatPrice(order.summary.total)}</div>
+        <div><span>Order ID:</span> <span>${order.id}</span></div>
+        <div><span>Subtotal:</span> <span>${formatPrice(order.summary.subtotal)}</span></div>
+        <div><span>Shipping:</span> <span>${order.summary.shipping === 0 ? 'FREE' : formatPrice(order.summary.shipping)}</span></div>
+        <div><span>Total:</span> <span>${formatPrice(order.summary.total)}</span></div>
       </div>
-      <a href="${waURL}" target="_blank" class="btn btn-whatsapp" id="waOpenBtn">
+      <a href="${waURL}" target="_blank" class="btn btn-whatsapp" id="waOpenBtn" style="display: block; width: 100%; text-decoration: none; margin-bottom: 1rem;">
         <i class="fab fa-whatsapp"></i> Open WhatsApp & Send Order
       </a>
       <p class="wa-instruction">After sending the message, click below to complete your order.</p>
-      <button onclick="confirmWhatsAppSent('${order.id}')" class="btn btn-primary btn-block">
+      <button onclick="confirmWhatsAppSent('${order.id}')" class="btn btn-primary" style="width: 100%; padding: 12px; font-weight: 700;">
         ✅ I Sent the Message — Confirm Order
       </button>
-      <button onclick="retryWhatsApp('${encodeURIComponent(waURL)}')" class="btn btn-link">
+      <button onclick="retryWhatsApp('${encodeURIComponent(waURL)}')" class="btn btn-link" style="margin-top: 10px; display: block; border: none; background: none; color: #666; cursor: pointer;">
         WhatsApp didn't open? Try again
       </button>
     </div>
@@ -242,9 +277,13 @@ function showWhatsAppConfirmation(order) {
 
   document.body.appendChild(overlay);
 
-  // Auto-open WhatsApp
+  // Auto-open WhatsApp with a small delay
   setTimeout(() => {
-    window.open(waURL, '_blank');
+    try {
+      window.open(waURL, '_blank');
+    } catch (e) {
+      console.warn('Popup blocked, user will click the link');
+    }
   }, 500);
 }
 
@@ -286,8 +325,8 @@ async function submitCheckout(event) {
       saveOrder(order);
 
       // If Supabase is available, save there too
-      if (typeof window.supabaseClient !== 'undefined' && window.supabaseClient) {
-        saveOrderToSupabase(order).catch(err => {
+      if (typeof createOrderInSupabase === 'function') {
+        createOrderInSupabase(order).catch(err => {
           console.warn('Supabase save failed, order saved locally', err);
         });
       }
@@ -304,37 +343,12 @@ async function submitCheckout(event) {
   }, 800);
 }
 
-// Save order to Supabase (if available)
+// Internal helper (kept for safety, but primary is in supabase-client.js)
 async function saveOrderToSupabase(order) {
-  if (!window.supabaseClient) return null;
-
-  try {
-    const { data, error } = await window.supabaseClient
-      .from('orders')
-      .insert([{
-        order_id: order.id,
-        customer_name: order.customerInfo.fullName,
-        customer_email: order.customerInfo.email,
-        customer_phone: order.customerInfo.phone,
-        customer_address: order.customerInfo.address,
-        customer_city: order.customerInfo.city,
-        items: order.items,
-        subtotal: order.summary.subtotal,
-        shipping: order.summary.shipping,
-        total: order.summary.total,
-        payment_method: order.paymentMethod,
-        notes: order.notes,
-        status: order.status,
-        created_at: order.timestamp
-      }])
-      .select();
-
-    if (error) throw error;
-    return data;
-  } catch (error) {
-    console.error('Supabase error:', error);
-    throw error;
+  if (typeof createOrderInSupabase === 'function') {
+    return createOrderInSupabase(order);
   }
+  return null;
 }
 
 // Get order by ID
