@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <base href="/Vision-Books-And-Uniform-/">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Learn more about Visionbooks & Uniform, Pakistan's premier online store for books, stationery, and school uniforms.">
+  <title>About Us – Visionbooks & Uniform</title>
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .about-hero {
+      background: linear-gradient(rgba(26, 60, 94, 0.8), rgba(26, 60, 94, 0.8)), url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=1600&q=80');
+      background-size: cover;
+      background-position: center;
+      color: var(--white);
+      padding: var(--space-3xl) 0;
+      text-align: center;
+    }
+    .about-section {
+      padding: var(--space-3xl) 0;
+    }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3xl);
+      align-items: center;
+    }
+    .about-image img {
+      border-radius: var(--border-radius-lg);
+      box-shadow: var(--shadow-xl);
+    }
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: var(--space-xl);
+      margin-top: var(--space-2xl);
+    }
+    .value-card {
+      background: var(--white);
+      padding: var(--space-xl);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      text-align: center;
+      transition: transform var(--transition);
+    }
+    .value-card:hover {
+      transform: translateY(-10px);
+    }
+    .value-icon {
+      font-size: 3rem;
+      color: var(--accent);
+      margin-bottom: var(--space-md);
+    }
+    @media (max-width: 768px) {
+      .about-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page-loader" id="pageLoader">
+    <div class="loader-spinner"></div>
+    <span class="loader-text">Loading Details...</span>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="container">
+      <div class="top-bar-left">
+        <span><i class="fas fa-truck"></i> Free delivery on orders above Rs. 2,000</span>
+        <span><i class="fas fa-phone"></i> <span id="topBarPhone"></span></span>
+      </div>
+      <div class="top-bar-marquee">
+        <span id="announcementMarquee"></span>
+      </div>
+      <div class="top-bar-right">
+        <a href="about.html" class="active"><i class="fas fa-info-circle"></i> About Us</a>
+        <a href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="header" id="mainHeader">
+    <div class="header-main">
+      <div class="container">
+        <a href="index.html" class="logo">
+          <div class="logo-icon"><i class="fas fa-book-open"></i></div>
+          <div class="logo-text">
+            <span class="store-name" id="storeName"></span>
+            <span class="store-tagline" id="storeTagline"></span>
+          </div>
+        </a>
+        <div class="header-actions">
+          <button class="header-action-btn" onclick="window.location.href='wishlist.html'">
+            <i class="fas fa-heart"></i>
+            <span>Wishlist</span>
+            <span class="action-badge" id="wishlistBadge">0</span>
+          </button>
+          <button class="header-action-btn" onclick="window.location.href='cart.html'">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Cart</span>
+            <span class="action-badge" id="cartBadge">0</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="about-hero">
+    <div class="container">
+      <h1 style="color: white; margin-bottom: var(--space-md);">Our Story</h1>
+      <p style="font-size: var(--text-xl); opacity: 0.9; max-width: 700px; margin: 0 auto;">
+        Providing quality education materials and stationery to the students of Pakistan since 2010.
+      </p>
+    </div>
+  </section>
+
+  <section class="about-section">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-image">
+          <img src="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=800&q=80" alt="About Visionbooks">
+        </div>
+        <div class="about-content">
+          <h2 style="margin-bottom: var(--space-lg);">Bridging the Gap in Quality Education</h2>
+          <p>
+            Visionbooks & Uniform started with a simple vision: to make high-quality academic materials, literature, and school essentials accessible to every student across Pakistan. What began as a small local bookshop has now grown into one of the country's most trusted online stores for students and educators.
+          </p>
+          <p>
+            We believe that every child deserves the best tools for their educational journey. That's why we meticulously curate our collection of books, stationery, and uniforms to ensure they meet the highest standards of quality and affordability.
+          </p>
+          <div style="margin-top: var(--space-xl);">
+            <a href="products.html" class="btn btn-primary">Browse Our Catalog</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="values-grid">
+        <div class="value-card">
+          <div class="value-icon"><i class="fas fa-heart"></i></div>
+          <h3>Passion for Learning</h3>
+          <p>We are driven by our love for books and a deep commitment to supporting the educational landscape of Pakistan.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon"><i class="fas fa-check-circle"></i></div>
+          <h3>Quality Assured</h3>
+          <p>Every product in our store is carefully inspected to ensure it meets our strict quality guidelines before it reaches you.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon"><i class="fas fa-shipping-fast"></i></div>
+          <h3>Fast Delivery</h3>
+          <p>We understand that students need their supplies on time. Our logistics network ensures speedy delivery to your doorstep.</p>
+        </div>
+        <div class="value-card">
+          <div class="value-icon"><i class="fas fa-users"></i></div>
+          <h3>Community First</h3>
+          <p>We actively support local schools and educators, fostering a community that values knowledge and growth.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom" style="padding: var(--space-xl) 0;">
+        <p>© 2026 <span id="footerCopyright"></span>. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <a href="#" class="whatsapp-btn" id="whatsappFloatBtn" target="_blank"><i class="fab fa-whatsapp"></i></a>
+
+  <script src="js/config.js"></script>
+  <script src="js/utils.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Basic initialization from config
+      document.getElementById('storeName').textContent = CONFIG.store.name;
+      document.getElementById('storeTagline').textContent = CONFIG.store.tagline;
+      document.getElementById('footerCopyright').textContent = CONFIG.store.name;
+      document.getElementById('topBarPhone').textContent = CONFIG.store.phone;
+      document.getElementById('announcementMarquee').textContent = CONFIG.announcements.join(' | ');
+      document.getElementById('whatsappFloatBtn').href = CONFIG.social.whatsapp;
+    });
+  </script>
+</body>
+</html>
