@@ -261,7 +261,7 @@ function renderOrdersTable() {
       <td>${Array.isArray(order.items) ? order.items.length : 0} items</td>
       <td>${formatPrice(order.total || 0)}</td>
       <td>
-        <select class="status-select" onchange="updateOrderStatusInline(${order.id}, this.value)">
+        <select class="status-select" onchange="updateOrderStatusInline('${order.local_order_id || order.id}', this.value)">
           <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
           <option value="confirmed" ${order.status === 'confirmed' ? 'selected' : ''}>Confirmed</option>
           <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>Shipped</option>
@@ -271,7 +271,7 @@ function renderOrdersTable() {
       </td>
       <td>${new Date(order.created_at).toLocaleDateString()}</td>
       <td>
-        <button class="btn-icon" onclick="viewOrderDetails(${order.id})" title="View">
+        <button class="btn-icon" onclick="viewOrderDetails('${order.local_order_id || order.id}')" title="View">
           <i class="fas fa-eye"></i>
         </button>
       </td>
@@ -293,7 +293,7 @@ function filterOrders() {
       <td>${Array.isArray(order.items) ? order.items.length : 0} items</td>
       <td>${formatPrice(order.total || 0)}</td>
       <td>
-        <select class="status-select" onchange="updateOrderStatusInline(${order.id}, this.value)">
+        <select class="status-select" onchange="updateOrderStatusInline('${order.local_order_id || order.id}', this.value)">
           <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
           <option value="confirmed" ${order.status === 'confirmed' ? 'selected' : ''}>Confirmed</option>
           <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>Shipped</option>
@@ -303,7 +303,7 @@ function filterOrders() {
       </td>
       <td>${new Date(order.created_at).toLocaleDateString()}</td>
       <td>
-        <button class="btn-icon" onclick="viewOrderDetails(${order.id})" title="View">
+        <button class="btn-icon" onclick="viewOrderDetails('${order.local_order_id || order.id}')" title="View">
           <i class="fas fa-eye"></i>
         </button>
       </td>
