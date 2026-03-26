@@ -170,7 +170,7 @@ async function updateOrderStatus(orderId, newStatus) {
     if (error) throw error;
     return data[0];
   } catch (error) {
-    console.error('Error updating order status:', error);
+    console.error('Supabase update failed:', error);
     throw error;
   }
 }

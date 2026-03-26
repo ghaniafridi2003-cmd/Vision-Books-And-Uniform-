@@ -318,8 +318,9 @@ async function updateOrderStatusInline(orderId, newStatus) {
     showToast('Order status updated', 'success');
     await loadDashboardData();
   } catch (error) {
-    showToast('Error updating order status', 'error');
-    console.error(error);
+    const errorMsg = error.message || 'Unknown database error';
+    showToast(`Error: ${errorMsg}`, 'error');
+    console.error('Detailed Debug Error:', error);
   }
 }
 
