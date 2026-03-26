@@ -31,14 +31,14 @@ async function fetchProductsFromSupabase() {
       subcategory: product.subcategory || 'general',
       price: Number(product.price) || 0,
       originalPrice: product.original_price ? Number(product.original_price) : null,
-      stock: Number(product.stock) || 0,
+      stock: product.in_stock ? 10 : 0, // DB uses boolean 'in_stock', mapping to dummy numeric for UI
       image: product.image || '',
       images: Array.isArray(product.images) ? product.images : [product.image || ''],
       description: product.description || '',
       rating: Number(product.rating) || 4.5,
       reviews: Number(product.reviews) || 0,
       badge: product.badge || null,
-      featured: Boolean(product.featured),
+      featured: Boolean(product.is_featured),
       isNew: Boolean(product.is_new),
       tags: Array.isArray(product.tags) ? product.tags : []
     }));
@@ -60,14 +60,14 @@ async function upsertProduct(product) {
       subcategory: product.subcategory,
       price: product.price,
       original_price: product.originalPrice,
-      stock: product.stock,
+      in_stock: product.stock > 0,
       image: product.image,
       images: product.images,
       description: product.description,
       rating: product.rating,
       reviews: product.reviews,
       badge: product.badge,
-      featured: product.featured,
+      is_featured: product.featured,
       is_new: product.isNew,
       tags: product.tags
     };
