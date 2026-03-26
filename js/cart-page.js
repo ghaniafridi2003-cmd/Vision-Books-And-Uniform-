@@ -41,29 +41,29 @@ function renderCartItems() {
 
     html += `
       <div class="cart-item">
-        <img src="${item.image}" alt="${item.name}" class="cart-item-image">
+        <img src="${item.image}" alt="${escapeHTML(item.name)}" class="cart-item-image">
         
         <div class="cart-item-details">
-          <h4>${item.name}</h4>
-          <p class="cart-item-category">${item.category}</p>
+          <h4>${escapeHTML(item.name)}</h4>
+          <p class="cart-item-category">${escapeHTML(item.category)}</p>
           <p class="cart-item-price">${formatPrice(item.price)}</p>
         </div>
 
         <div class="cart-item-quantity">
-          <button class="qty-btn" onclick="updateCartQuantity('${item.id}', ${item.qty - 1})" ${item.qty <= 1 ? 'disabled' : ''}>
+          <button class="qty-btn" onclick="updateCartQuantity('${escapeHTML(item.id)}', ${item.qty - 1})" ${item.qty <= 1 ? 'disabled' : ''}>
             <i class="fas fa-minus"></i>
           </button>
           <input type="number" value="${item.qty}" min="1" max="${stock}" 
-                 onchange="updateCartQuantity('${item.id}', parseInt(this.value))" 
+                 onchange="updateCartQuantity('${escapeHTML(item.id)}', parseInt(this.value))" 
                  class="qty-input">
-          <button class="qty-btn" onclick="updateCartQuantity('${item.id}', ${item.qty + 1})" ${item.qty >= stock ? 'disabled' : ''}>
+          <button class="qty-btn" onclick="updateCartQuantity('${escapeHTML(item.id)}', ${item.qty + 1})" ${item.qty >= stock ? 'disabled' : ''}>
             <i class="fas fa-plus"></i>
           </button>
         </div>
 
         <div class="cart-item-total">
           <p class="item-total-price">${formatPrice(item.price * item.qty)}</p>
-          <button class="btn-remove" onclick="removeFromCart('${item.id}')">
+          <button class="btn-remove" onclick="removeFromCart('${escapeHTML(item.id)}')">
             <i class="fas fa-trash"></i> Remove
           </button>
         </div>

@@ -74,9 +74,9 @@ function renderOrderSummary(cart) {
   // Render cart items
   let itemsHTML = cart.map(item => `
     <div class="summary-item">
-      <img src="${item.image}" alt="${item.name}" />
+      <img src="${item.image}" alt="${escapeHTML(item.name)}" />
       <div class="summary-item-details">
-        <h4>${item.name}</h4>
+        <h4>${escapeHTML(item.name)}</h4>
         <span>Qty: ${item.qty}</span>
       </div>
       <div class="summary-item-price">${formatPrice(item.price * item.qty)}</div>

@@ -108,7 +108,7 @@ function renderRecentOrders() {
   container.innerHTML = recent.map(order => `
     <div class="order-item">
       <div>
-        <strong>${order.customer_name || order.local_order_id}</strong>
+        <strong>${escapeHTML(order.customer_name || order.local_order_id)}</strong>
         <small>${formatPrice(order.total || 0)}</small>
       </div>
       <span class="badge badge-${order.status}">${order.status}</span>
@@ -190,23 +190,24 @@ function renderProductsTable() {
   const tbody = document.getElementById('productsTableBody');
   
   if (allProducts.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No products found</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No products found</td></tr>';
     return;
   }
 
   tbody.innerHTML = allProducts.map(product => `
     <tr>
-      <td><img src="${product.image}" alt="${product.name}" class="product-thumb"></td>
-      <td><strong>${product.name}</strong></td>
-      <td>${product.category}</td>
+      <td>
+        <img src="${product.image}" alt="${escapeHTML(product.name)}" style="width: 40px; height: 40px; border-radius: 4px; object-fit: cover;">
+      </td>
+      <td><strong>${escapeHTML(product.name)}</strong></td>
+      <td><span class="badge badge-secondary">${escapeHTML(product.category)}</span></td>
       <td>${formatPrice(product.price)}</td>
       <td>${product.stock}</td>
-      <td><span class="badge badge-${product.stock > 0 ? 'success' : 'danger'}">${product.stock > 0 ? 'In Stock' : 'Out of Stock'}</span></td>
       <td>
-        <button class="btn-icon" onclick="editProduct('${product.id}')" title="Edit">
+        <button class="btn-icon" onclick="editProduct('${escapeHTML(product.id)}')" title="Edit">
           <i class="fas fa-edit"></i>
         </button>
-        <button class="btn-icon btn-danger" onclick="confirmDeleteProduct('${product.id}')" title="Delete">
+        <button class="btn-icon" onclick="deleteProduct('${escapeHTML(product.id)}')" style="color: var(--danger);" title="Delete">
           <i class="fas fa-trash"></i>
         </button>
       </td>
@@ -226,17 +227,18 @@ function filterProducts() {
   const tbody = document.getElementById('productsTableBody');
   tbody.innerHTML = filtered.map(product => `
     <tr>
-      <td><img src="${product.image}" alt="${product.name}" class="product-thumb"></td>
-      <td><strong>${product.name}</strong></td>
-      <td>${product.category}</td>
+      <td>
+        <img src="${product.image}" alt="${escapeHTML(product.name)}" style="width: 40px; height: 40px; border-radius: 4px; object-fit: cover;">
+      </td>
+      <td><strong>${escapeHTML(product.name)}</strong></td>
+      <td><span class="badge badge-secondary">${escapeHTML(product.category)}</span></td>
       <td>${formatPrice(product.price)}</td>
       <td>${product.stock}</td>
-      <td><span class="badge badge-${product.stock > 0 ? 'success' : 'danger'}">${product.stock > 0 ? 'In Stock' : 'Out of Stock'}</span></td>
       <td>
-        <button class="btn-icon" onclick="editProduct('${product.id}')" title="Edit">
+        <button class="btn-icon" onclick="editProduct('${escapeHTML(product.id)}')" title="Edit">
           <i class="fas fa-edit"></i>
         </button>
-        <button class="btn-icon btn-danger" onclick="confirmDeleteProduct('${product.id}')" title="Delete">
+        <button class="btn-icon" onclick="deleteProduct('${escapeHTML(product.id)}')" style="color: var(--danger);" title="Delete">
           <i class="fas fa-trash"></i>
         </button>
       </td>
@@ -255,9 +257,9 @@ function renderOrdersTable() {
 
   tbody.innerHTML = allOrders.map(order => `
     <tr>
-      <td><strong>${order.local_order_id || order.id}</strong></td>
-      <td>${order.customer_name || '-'}</td>
-      <td>${order.phone || '-'}</td>
+      <td><strong>${escapeHTML(order.local_order_id || order.id)}</strong></td>
+      <td>${escapeHTML(order.customer_name || '-')}</td>
+      <td>${escapeHTML(order.phone || '-')}</td>
       <td>${Array.isArray(order.items) ? order.items.length : 0} items</td>
       <td>${formatPrice(order.total || 0)}</td>
       <td>
@@ -287,9 +289,9 @@ function filterOrders() {
   const tbody = document.getElementById('ordersTableBody');
   tbody.innerHTML = filtered.map(order => `
     <tr>
-      <td><strong>${order.local_order_id || order.id}</strong></td>
-      <td>${order.customer_name || '-'}</td>
-      <td>${order.phone || '-'}</td>
+      <td><strong>${escapeHTML(order.local_order_id || order.id)}</strong></td>
+      <td>${escapeHTML(order.customer_name || '-')}</td>
+      <td>${escapeHTML(order.phone || '-')}</td>
       <td>${Array.isArray(order.items) ? order.items.length : 0} items</td>
       <td>${formatPrice(order.total || 0)}</td>
       <td>

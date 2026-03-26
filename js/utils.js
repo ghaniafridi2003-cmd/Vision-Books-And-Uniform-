@@ -210,6 +210,17 @@ function copyToClipboard(text) {
   showToast('Link copied to clipboard!', 'success');
 }
 
+// Sanitize HTML to prevent XSS
+function escapeHTML(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 // Format date
 function formatDate(dateString) {
   const date = new Date(dateString);
@@ -299,34 +310,34 @@ function getUrlParameter(name) {
 function generateProductCard(product) {
   const discount = getDiscountPercent(product.price, product.originalPrice);
   const badgeHTML = product.badge ? 
-    `<span class="badge badge-${product.badge}">${product.badge === 'sale' ? `-${discount}%` : product.badge.toUpperCase()}</span>` 
+    `<span class="badge badge-${escapeHTML(product.badge)}">${product.badge === 'sale' ? `-${discount}%` : escapeHTML(product.badge.toUpperCase())}</span>` 
     : '';
   
   const isWishlisted = isInWishlist(product.id);
   
   return `
-    <div class="product-card" data-category="${product.category}" data-id="${product.id}">
+    <div class="product-card" data-category="${escapeHTML(product.category)}" data-id="${escapeHTML(product.id)}">
       <div class="product-image-wrap">
-        <img src="${product.image}" alt="${product.name}" loading="lazy" 
-             onclick="window.location.href='product-detail.html?id=${product.id}'" />
+        <img src="${product.image}" alt="${escapeHTML(product.name)}" loading="lazy" 
+             onclick="window.location.href='product-detail.html?id=${escapeHTML(product.id)}'" />
         ${badgeHTML ? `<div class="product-badges">${badgeHTML}</div>` : ''}
         <div class="product-actions">
           <button class="product-action-btn ${isWishlisted ? 'active' : ''}" 
-                  onclick="toggleWishlist('${product.id}', this)" 
+                  onclick="toggleWishlist('${escapeHTML(product.id)}', this)" 
                   title="Wishlist">
             <i class="fa${isWishlisted ? 's' : 'r'} fa-heart"></i>
           </button>
           <button class="product-action-btn" 
-                  onclick="shareProduct('${product.id}')" 
+                  onclick="shareProduct('${escapeHTML(product.id)}')" 
                   title="Share">
             <i class="fas fa-share-alt"></i>
           </button>
         </div>
       </div>
       <div class="product-info">
-        <div class="product-category">${CONFIG.categories[product.category]?.label || product.category}</div>
-        <h3 class="product-name" onclick="window.location.href='product-detail.html?id=${product.id}'">
-          ${product.name}
+        <div class="product-category">${escapeHTML(CONFIG.categories[product.category]?.label || product.category)}</div>
+        <h3 class="product-name" onclick="window.location.href='product-detail.html?id=${escapeHTML(product.id)}'">
+          ${escapeHTML(product.name)}
         </h3>
         <div class="product-rating">
           <div class="stars">${generateStars(product.rating)}</div>
@@ -339,10 +350,10 @@ function generateProductCard(product) {
           ${discount > 0 ? `<span class="price-discount">-${discount}%</span>` : ''}
         </div>
         <div class="product-actions-bottom">
-          <button class="btn btn-primary" onclick="addToCart('${product.id}')">
+          <button class="btn btn-primary" onclick="addToCart('${escapeHTML(product.id)}')">
             <i class="fas fa-shopping-cart"></i> Add to Cart
           </button>
-          <button class="btn btn-secondary" onclick="buyNow('${product.id}')">
+          <button class="btn btn-secondary" onclick="buyNow('${escapeHTML(product.id)}')">
             <i class="fas fa-bolt"></i> Buy Now
           </button>
         </div>
