@@ -3,6 +3,15 @@
  * Visionbooks & Uniform Admin Dashboard
  */
 
+// Mock legacy functions to prevent errors after removing Supabase
+async function isAdminLoggedIn() { return false; }
+async function adminLogin(email, password) { return false; }
+async function adminLogout() { return true; }
+async function fetchProductsFromSupabase() { return []; }
+async function fetchOrdersFromSupabase() { return []; }
+async function upsertProduct(product) { return product; }
+async function deleteProduct(productId) { return true; }
+
 let allProducts = [];
 let allOrders = [];
 let currentEditingProduct = null;

@@ -325,18 +325,6 @@ let globalProducts = [];
 
 // Functions to get products
 async function loadAllProducts() {
-  try {
-    // Try to fetch from Supabase first
-    const supabaseProducts = await fetchProductsFromSupabase();
-    if (supabaseProducts && supabaseProducts.length > 0) {
-      globalProducts = supabaseProducts;
-      return globalProducts;
-    }
-  } catch (error) {
-    console.warn('Supabase fetch failed, using local products:', error);
-  }
-  
-  // Fallback to sample products if Supabase fails or is empty
   globalProducts = SAMPLE_PRODUCTS;
   return globalProducts;
 }
