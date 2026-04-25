@@ -14,11 +14,22 @@ function getCart() {
   }
 }
 
-// Save cart to localStorage
-function saveCart(cart) {
+// Save cart to localStorage AND Firebase (if logged in)
+async function saveCart(cart) {
   try {
+    // 1. Always save locally for instant UI updates
     localStorage.setItem('visionbooks_cart', JSON.stringify(cart));
     updateCartBadge();
+    
+    // 2. If user is logged in, back it up to Firebase!
+    if (window.currentUser && window.firebaseDb) {
+      // Import Firestore functions dynamically
+      const { doc, setDoc } = await import("https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js");
+      
+      // Save it to a "carts" collection, using their User ID as the document name
+      const cartRef = doc(window.firebaseDb, "carts", window.currentUser.uid);
+      await setDoc(cartRef, { items: cart });
+    }
   } catch (e) {
     console.error('Error saving cart:', e);
   }

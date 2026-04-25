@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login / Sign Up - Vision Shop</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body {
+            background-color: #f9f9f9;
+        }
+
+        .auth-container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 40px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .auth-container h2 {
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        .auth-input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        /* Simple button styles to match your theme */
+        .btn-auth {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-login {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-signup {
+            background: transparent;
+            border: 2px solid #007bff;
+            color: #007bff;
+        }
+
+        .btn-logout {
+            background: #ff4d4d;
+            color: white;
+            width: 100%;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="auth-container">
+        <h2>Welcome to Vision Shop</h2>
+
+        <input type="email" id="emailInput" class="auth-input" placeholder="Email Address">
+        <input type="password" id="passwordInput" class="auth-input" placeholder="Password">
+
+        <div class="auth-buttons">
+            <button class="btn-auth btn-login" onclick="handleLogin()">Log In</button>
+            <button class="btn-auth btn-signup" onclick="handleSignup()">Sign Up</button>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+
+        <button class="btn-auth btn-logout" onclick="handleLogout()">Log Out (For Testing)</button>
+
+        <br><br>
+        <a href="index.html" style="color: #666; text-decoration: none; font-size: 14px;">&larr; Back to Home</a>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script type="module" src="js/firebase-client.js"></script>
+    <script type="module" src="js/auth.js"></script>
+
+    <!-- Form Logic -->
+    <script>
+        function getInputs() {
+            return {
+                email: document.getElementById('emailInput').value,
+                password: document.getElementById('passwordInput').value
+            };
+        }
+
+        async function handleLogin() {
+            const { email, password } = getInputs();
+            if (!email || !password) return alert("Please enter an email and password.");
+
+            const user = await window.logInUser(email, password);
+            if (user) {
+                window.location.href = 'index.html'; // Redirect to home on success
+            }
+        }
+
+        async function handleSignup() {
+            const { email, password } = getInputs();
+            if (!email || !password) return alert("Please enter an email and password.");
+
+            // Firebase requires passwords to be at least 6 characters
+            if (password.length < 6) return alert("Password must be at least 6 characters long.");
+
+            const user = await window.signUpUser(email, password);
+            if (user) {
+                window.location.href = 'index.html'; // Redirect to home on success
+            }
+        }
+
+        async function handleLogout() {
+            await window.logOutUser();
+        }
+    </script>
+</body>
+
+</html>

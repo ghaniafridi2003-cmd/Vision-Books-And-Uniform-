@@ -14,11 +14,17 @@ function getWishlist() {
   }
 }
 
-// Save wishlist to localStorage
-function saveWishlist(wishlist) {
+// Save wishlist to localStorage AND Firebase (if logged in)
+async function saveWishlist(wishlist) {
   try {
     localStorage.setItem('visionbooks_wishlist', JSON.stringify(wishlist));
     updateWishlistBadge();
+    
+    if (window.currentUser && window.firebaseDb) {
+      const { doc, setDoc } = await import("https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js");
+      const wishlistRef = doc(window.firebaseDb, "wishlists", window.currentUser.uid);
+      await setDoc(wishlistRef, { items: wishlist });
+    }
   } catch (e) {
     console.error('Error saving wishlist:', e);
   }
