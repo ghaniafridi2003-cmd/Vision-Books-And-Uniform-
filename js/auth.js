@@ -1,15 +1,59 @@
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
 
-// 1. Listen for user state changes (checks if logged in or out on every page load)
+// 1. Listen for user state changes
 onAuthStateChanged(window.firebaseAuth, (user) => {
+    const loginBtnText = document.getElementById('loginBtnText');
+    const loginBtn = document.getElementById('loginBtn');
+    
     if (user) {
         console.log("User is logged in:", user.email);
-        window.currentUser = user; // Save globally so cart/wishlist can use it
+        window.currentUser = user; 
+        
+        if (loginBtnText) loginBtnText.textContent = 'Dashboard';
+        if (loginBtn) loginBtn.onclick = () => window.location.href = 'admin.html';
+        
+        // Pull the user's cart and wishlist from Firebase
+        import("https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js").then(async ({ doc, getDoc, setDoc }) => {
+          // --- CART MERGE ---
+          const cartRef = doc(window.firebaseDb, "carts", user.uid);
+          const cartSnap = await getDoc(cartRef);
+          let localCart = JSON.parse(localStorage.getItem('visionbooks_cart') || '[]');
+          
+          if (cartSnap.exists()) {
+            const firebaseCart = cartSnap.data().items || [];
+            if (localCart.length === 0 && firebaseCart.length > 0) {
+              localStorage.setItem('visionbooks_cart', JSON.stringify(firebaseCart));
+              if(window.updateCartBadge) window.updateCartBadge(); 
+              if(window.renderCartItems) window.renderCartItems(); 
+            } else if (localCart.length > 0) {
+              await setDoc(cartRef, { items: localCart });
+            }
+          } else if (localCart.length > 0) {
+            await setDoc(cartRef, { items: localCart });
+          }
 
-        // TODO later: Merge local cart into Firebase cart here
+          // --- WISHLIST MERGE ---
+          const wishlistRef = doc(window.firebaseDb, "wishlists", user.uid);
+          const wishlistSnap = await getDoc(wishlistRef);
+          let localWishlist = JSON.parse(localStorage.getItem('visionbooks_wishlist') || '[]');
+          
+          if (wishlistSnap.exists()) {
+            const firebaseWishlist = wishlistSnap.data().items || [];
+            if (localWishlist.length === 0 && firebaseWishlist.length > 0) {
+              localStorage.setItem('visionbooks_wishlist', JSON.stringify(firebaseWishlist));
+              if(window.updateWishlistBadge) window.updateWishlistBadge();
+            } else if (localWishlist.length > 0) {
+              await setDoc(wishlistRef, { items: localWishlist });
+            }
+          } else if (localWishlist.length > 0) {
+            await setDoc(wishlistRef, { items: localWishlist });
+          }
+        });
     } else {
         console.log("User is logged out");
         window.currentUser = null;
+        if (loginBtnText) loginBtnText.textContent = 'Login';
+        if (loginBtn) loginBtn.onclick = () => window.location.href = 'login.html';
     }
 });
 
