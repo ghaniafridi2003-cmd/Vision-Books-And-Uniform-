@@ -98,7 +98,23 @@
     <script type="module" src="js/auth.js"></script>
 
     <!-- Form Logic -->
-    <script>
+    <script type="module">
+        // Check if user is admin (UID exists in the 'admins' Firestore collection)
+        async function isAdmin(uid) {
+            try {
+                const { doc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js");
+                const snap = await getDoc(doc(window.firebaseDb, 'admins', uid));
+                return snap.exists();
+            } catch (e) {
+                return false;
+            }
+        }
+
+        async function redirectAfterAuth(user) {
+            const admin = await isAdmin(user.uid);
+            window.location.href = admin ? 'admin.html' : 'index.html';
+        }
+
         function getInputs() {
             return {
                 email: document.getElementById('emailInput').value,
@@ -109,29 +125,26 @@
         async function handleLogin() {
             const { email, password } = getInputs();
             if (!email || !password) return alert("Please enter an email and password.");
-
             const user = await window.logInUser(email, password);
-            if (user) {
-                window.location.href = 'admin.html'; // Redirect to dashboard on success
-            }
+            if (user) await redirectAfterAuth(user);
         }
 
         async function handleSignup() {
             const { email, password } = getInputs();
             if (!email || !password) return alert("Please enter an email and password.");
-
-            // Firebase requires passwords to be at least 6 characters
             if (password.length < 6) return alert("Password must be at least 6 characters long.");
-
             const user = await window.signUpUser(email, password);
-            if (user) {
-                window.location.href = 'admin.html'; // Redirect to dashboard on success
-            }
+            if (user) await redirectAfterAuth(user);
         }
 
         async function handleLogout() {
             await window.logOutUser();
         }
+
+        // Expose functions to global scope (needed since this is type="module")
+        window.handleLogin = handleLogin;
+        window.handleSignup = handleSignup;
+        window.handleLogout = handleLogout;
     </script>
 </body>
 
