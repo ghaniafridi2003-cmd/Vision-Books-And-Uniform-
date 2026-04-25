@@ -164,7 +164,7 @@ function handleNewsletter(event) {
     return;
   }
   
-  // Save to localStorage (in production, send to Supabase)
+  // Save to localStorage (in production, send to Firebase)
   const subscribers = JSON.parse(localStorage.getItem('newsletter_subscribers') || '[]');
   if (!subscribers.includes(email)) {
     subscribers.push(email);

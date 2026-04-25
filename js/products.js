@@ -1,7 +1,7 @@
 /**
  * PRODUCTS DATA
  * Product catalog for Visionbooks & Uniform
- * This file contains sample products. In production, fetch from Supabase.
+ * This file contains sample products. In production, fetch from Firebase.
  */
 
 const SAMPLE_PRODUCTS = [

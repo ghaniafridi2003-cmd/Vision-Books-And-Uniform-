@@ -55,6 +55,7 @@ async function adminLogout() {
   }
 }
 
+// Fetch products from Firestore
 async function fetchProductsFromFirebase() {
   try {
     const { collection, getDocs } = await import("https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js");
@@ -68,9 +69,7 @@ async function fetchProductsFromFirebase() {
   }
 }
 
-// Alias for backward compat with calls inside this file
-const fetchProductsFromSupabase = fetchProductsFromFirebase;
-
+// Fetch orders from Firestore
 async function fetchOrdersFromFirebase() {
   try {
     const { collection, getDocs } = await import("https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js");
@@ -84,7 +83,6 @@ async function fetchOrdersFromFirebase() {
   }
 }
 
-const fetchOrdersFromSupabase = fetchOrdersFromFirebase;
 
 async function upsertProduct(product) {
   const { doc, setDoc } = await import("https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js");
@@ -104,72 +102,61 @@ async function updateOrderStatus(orderId, status) {
   return true;
 }
 
+async function fetchUsersFromFirebase() {
+  try {
+    const { collection, getDocs } = await import("https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js");
+    const snapshot = await getDocs(collection(window.firebaseDb, "users"));
+    const users = [];
+    snapshot.forEach(doc => users.push({ id: doc.id, ...doc.data() }));
+    return users;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}
+
+let allUsers = [];
+
 let allProducts = [];
 let allOrders = [];
 let currentEditingProduct = null;
 
-// ── Init ──────────────────────────────────────────────────────────────────────
+// ── Init ─────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async function() {
-  if (await isAdminLoggedIn()) {
-    showDashboard();
-    await loadDashboardData();
-  } else {
-    // Redirect to login instead of showing the built-in login screen
-    window.location.href = 'login.html';
-  }
-});
+  const user = await _getAuthUser();
+  if (!user) { window.location.href = 'login.html'; return; }
 
-// Show login screen
-function showLogin() {
-  document.getElementById('loginScreen').style.display = 'flex';
-  document.getElementById('adminDashboard').style.display = 'none';
-}
+  try {
+    const { doc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js");
+    const snap = await getDoc(doc(window.firebaseDb, 'admins', user.uid));
+    if (!snap.exists()) { window.location.href = 'login.html'; return; }
+  } catch { window.location.href = 'login.html'; return; }
 
-// Show dashboard
-function showDashboard() {
-  document.getElementById('loginScreen').style.display = 'none';
+  // Show dashboard and fill in admin email
   document.getElementById('adminDashboard').style.display = 'flex';
-}
+  const emailEl = document.getElementById('adminEmail');
+  if (emailEl) emailEl.textContent = user.email;
+  const settingAdminEl = document.getElementById('settingAdminEmail');
+  if (settingAdminEl) settingAdminEl.textContent = user.email;
 
-// Handle login
-async function handleLogin(event) {
-  event.preventDefault();
-  const email = document.getElementById('loginEmail').value;
-  const password = document.getElementById('loginPassword').value;
-
-  const success = await adminLogin(email, password);
-  
-  if (success) {
-    showToast('Login successful!', 'success');
-    showDashboard();
-    await loadDashboardData();
-  } else {
-    showToast('Invalid credentials', 'error');
-  }
-}
-
-// Handle logout
-async function handleLogout() {
-  if (confirm('Are you sure you want to logout?')) {
-    await adminLogout();
-    showLogin();
-  }
-}
+  await loadDashboardData();
+});
 
 // Load all dashboard data
 async function loadDashboardData() {
   try {
-    // Load products from Supabase
-    allProducts = await fetchProductsFromSupabase();
-    
-    // If no products in Supabase, use local products
+    // Load products from Firebase (falls back to sample data if empty)
+    allProducts = await fetchProductsFromFirebase();
     if (allProducts.length === 0) {
-      allProducts = getAllProducts();
-      showToast('Using local products. Click "Sync Database" to upload to Supabase.', 'info');
+      allProducts = SAMPLE_PRODUCTS;
+      showToast('No products in Firebase yet. Click "Import Products" to upload them.', 'info');
     }
 
-    // Load orders from Supabase
-    allOrders = await fetchOrdersFromSupabase();
+    // Load orders from Firebase
+    allOrders = await fetchOrdersFromFirebase();
+
+    // Load users from Firebase
+    allUsers = await fetchUsersFromFirebase();
 
     // Update dashboard
     updateDashboardStats();
@@ -177,6 +164,7 @@ async function loadDashboardData() {
     renderLowStock();
     renderProductsTable();
     renderOrdersTable();
+    renderUsersTable();
     loadSettings();
   } catch (error) {
     console.error('Error loading dashboard data:', error);
@@ -188,11 +176,12 @@ async function loadDashboardData() {
 function updateDashboardStats() {
   document.getElementById('totalProducts').textContent = allProducts.length;
   document.getElementById('totalOrders').textContent = allOrders.length;
-  
+
   const pending = allOrders.filter(o => o.status === 'pending').length;
   document.getElementById('pendingOrders').textContent = pending;
-  
-  const revenue = allOrders.reduce((sum, o) => sum + (o.total || 0), 0);
+
+  // Revenue: handle both flat `total` and nested `summary.total`
+  const revenue = allOrders.reduce((sum, o) => sum + (o.summary?.total || o.total || 0), 0);
   document.getElementById('totalRevenue').textContent = formatPrice(revenue);
 }
 
@@ -206,15 +195,18 @@ function renderRecentOrders() {
     return;
   }
 
-  container.innerHTML = recent.map(order => `
+  container.innerHTML = recent.map(order => {
+    const name = order.customerInfo?.fullName || order.customer_name || order.id;
+    const total = order.summary?.total || order.total || 0;
+    return `
     <div class="order-item">
       <div>
-        <strong>${escapeHTML(order.customer_name || order.local_order_id)}</strong>
-        <small>${formatPrice(order.total || 0)}</small>
+        <strong>${escapeHTML(String(name))}</strong>
+        <small>${formatPrice(total)}</small>
       </div>
       <span class="badge badge-${order.status}">${order.status}</span>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
 // Render low stock products
@@ -272,6 +264,7 @@ function showSection(section, event) {
     dashboard: 'dashboardSection',
     products: 'productsSection',
     orders: 'ordersSection',
+    users: 'usersSection',
     settings: 'settingsSection'
   };
 
@@ -279,6 +272,7 @@ function showSection(section, event) {
     dashboard: 'Dashboard',
     products: 'Products Management',
     orders: 'Orders Management',
+    users: 'User Management',
     settings: 'Settings'
   };
 
@@ -458,6 +452,53 @@ function closeOrderModal() {
   document.getElementById('orderModal').style.display = 'none';
 }
 
+// User management rendering
+function renderUsersTable() {
+  const tbody = document.getElementById('usersTableBody');
+  
+  if (allUsers.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No users found</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = allUsers.map(user => `
+    <tr>
+      <td><code>${user.id.substring(0, 8)}...</code></td>
+      <td>${escapeHTML(user.email || '-')}</td>
+      <td>${user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '-'}</td>
+      <td><span class="badge badge-success">Active</span></td>
+      <td>
+        <button class="btn-icon" onclick="viewUserDetails('${user.id}')" title="View">
+          <i class="fas fa-eye"></i>
+        </button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function filterUsers() {
+  const search = document.getElementById('userSearch').value.toLowerCase();
+  const filtered = allUsers.filter(u => 
+    (u.email || '').toLowerCase().includes(search) ||
+    (u.id || '').toLowerCase().includes(search)
+  );
+
+  const tbody = document.getElementById('usersTableBody');
+  tbody.innerHTML = filtered.map(user => `
+    <tr>
+      <td><code>${user.id.substring(0, 8)}...</code></td>
+      <td>${escapeHTML(user.email || '-')}</td>
+      <td>${user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '-'}</td>
+      <td><span class="badge badge-success">Active</span></td>
+      <td>
+        <button class="btn-icon" onclick="viewUserDetails('${user.id}')" title="View">
+          <i class="fas fa-eye"></i>
+        </button>
+      </td>
+    </tr>
+  `).join('');
+}
+
 // Update order status inline
 async function updateOrderStatusInline(orderId, status) {
   try {
@@ -607,7 +648,7 @@ async function deleteProductById(productId) {
 }
 
 // Sync with Firebase
-async function syncWithSupabase() {
+async function syncWithFirebase() {
   try {
     showToast('Syncing with Firebase...', 'info');
     await loadDashboardData();
@@ -619,7 +660,7 @@ async function syncWithSupabase() {
 }
 
 // Import sample products to Firebase
-async function importProductsToSupabase() {
+async function importProductsToFirebase() {
   if (!confirm('This will upload all sample products to Firebase. Continue?')) {
     return;
   }
@@ -651,47 +692,77 @@ async function importProductsToSupabase() {
   }
 }
 
-// Load settings
-function loadSettings() {
-  document.getElementById('settingStoreName').textContent = CONFIG.store.name;
-  document.getElementById('settingPhone').textContent = CONFIG.store.phone;
-  document.getElementById('settingEmail').textContent = CONFIG.store.email;
-  document.getElementById('settingWhatsApp').textContent = CONFIG.store.whatsapp;
-  document.getElementById('settingFreeShipping').textContent = formatPrice(CONFIG.shipping.freeShippingThreshold);
-  document.getElementById('settingDeliveryFee').textContent = formatPrice(CONFIG.shipping.deliveryFee);
-  
-  const fbProject = document.getElementById('settingFirebaseProject');
-  if (fbProject) {
-    fbProject.textContent = window.firebaseDb?._databaseId?.projectId || 'Connected';
+// Load settings into form
+async function loadSettings() {
+  // Use CONFIG as fallback, but ideally we'd fetch from a 'settings' collection in Firestore
+  try {
+    const { doc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js");
+    const settingsSnap = await getDoc(doc(window.firebaseDb, 'settings', 'store_config'));
+    
+    let currentSettings = CONFIG;
+    if (settingsSnap.exists()) {
+      currentSettings = settingsSnap.data();
+      // Merge with CONFIG to ensure all keys exist
+      currentSettings = { ...CONFIG, ...currentSettings };
+    }
+
+    // Populate form
+    document.getElementById('storeNameInput').value = currentSettings.store?.name || CONFIG.store.name;
+    document.getElementById('storeTaglineInput').value = currentSettings.store?.tagline || CONFIG.store.tagline;
+    document.getElementById('storePhoneInput').value = currentSettings.store?.phone || CONFIG.store.phone;
+    document.getElementById('storeWhatsappInput').value = currentSettings.store?.whatsapp || CONFIG.store.whatsapp;
+    document.getElementById('storeEmailInput').value = currentSettings.store?.email || CONFIG.store.email;
+    document.getElementById('storeAddressInput').value = currentSettings.store?.address || CONFIG.store.address;
+    document.getElementById('storeDescriptionInput').value = currentSettings.store?.description || CONFIG.store.description;
+    
+    document.getElementById('freeShippingInput').value = currentSettings.shipping?.freeShippingThreshold || CONFIG.shipping.freeShippingThreshold;
+    document.getElementById('deliveryFeeInput').value = currentSettings.shipping?.deliveryFee || CONFIG.shipping.deliveryFee;
+    
+    document.getElementById('announcementsInput').value = (currentSettings.announcements || CONFIG.announcements).join('\n');
+    
+  } catch (error) {
+    console.error('Error loading settings:', error);
+    showToast('Failed to load settings from database', 'warning');
   }
 }
 
-// Toast notifications
-function showToast(message, type = 'info') {
-  const container = document.getElementById('toastContainer');
-  const toast = document.createElement('div');
-  toast.className = `toast toast-${type}`;
+// Save dashboard settings to Firestore
+async function saveDashboardSettings(event) {
+  event.preventDefault();
   
-  const icons = {
-    success: 'fa-check-circle',
-    error: 'fa-exclamation-circle',
-    warning: 'fa-exclamation-triangle',
-    info: 'fa-info-circle'
+  const newSettings = {
+    store: {
+      name: document.getElementById('storeNameInput').value,
+      tagline: document.getElementById('storeTaglineInput').value,
+      phone: document.getElementById('storePhoneInput').value,
+      whatsapp: document.getElementById('storeWhatsappInput').value,
+      email: document.getElementById('storeEmailInput').value,
+      address: document.getElementById('storeAddressInput').value,
+      description: document.getElementById('storeDescriptionInput').value
+    },
+    shipping: {
+      freeShippingThreshold: Number(document.getElementById('freeShippingInput').value),
+      deliveryFee: Number(document.getElementById('deliveryFeeInput').value)
+    },
+    announcements: document.getElementById('announcementsInput').value.split('\n').filter(line => line.trim() !== '')
   };
-  
-  toast.innerHTML = `
-    <i class="fas ${icons[type] || icons.info}"></i>
-    <span>${message}</span>
-  `;
-  
-  container.appendChild(toast);
-  setTimeout(() => toast.classList.add('show'), 10);
-  
-  setTimeout(() => {
-    toast.classList.remove('show');
-    setTimeout(() => toast.remove(), 300);
-  }, 3000);
+
+  try {
+    showToast('Saving settings...', 'info');
+    const { doc, setDoc } = await import("https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js");
+    await setDoc(doc(window.firebaseDb, 'settings', 'store_config'), newSettings);
+    
+    // Update local CONFIG (temporary for current session)
+    Object.assign(CONFIG, newSettings);
+    
+    showToast('Settings saved successfully!', 'success');
+  } catch (error) {
+    console.error('Error saving settings:', error);
+    showToast('Failed to save settings', 'error');
+  }
 }
+
+// showToast is provided by utils.js
 
 // Helper: Format price
 function formatPrice(price) {

@@ -8,53 +8,117 @@
     <style>
         body {
             background-color: #f9f9f9;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .auth-container {
-            max-width: 400px;
-            margin: 100px auto;
+            max-width: 420px;
+            width: 100%;
+            margin: 20px;
             padding: 40px;
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
             text-align: center;
         }
 
         .auth-container h2 {
-            margin-bottom: 25px;
+            margin-bottom: 10px;
             color: #333;
+            font-size: 1.8rem;
+        }
+
+        .auth-subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
         }
 
         .auth-input {
             width: 100%;
-            padding: 12px;
+            padding: 14px 16px;
             margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 16px;
+            border: 2px solid #e5e5e5;
+            border-radius: 10px;
+            font-size: 15px;
             box-sizing: border-box;
+            transition: border-color 0.3s;
         }
+
+        .auth-input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .auth-input.error {
+            border-color: #dc3545;
+        }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 13px;
+            text-align: left;
+            margin-top: -10px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .password-strength {
+            height: 4px;
+            background: #e5e5e5;
+            border-radius: 2px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .password-strength.show {
+            display: block;
+        }
+
+        .password-strength-bar {
+            height: 100%;
+            width: 0;
+            transition: width 0.3s, background-color 0.3s;
+            border-radius: 2px;
+        }
+
+        .password-strength-bar.weak { width: 33%; background: #dc3545; }
+        .password-strength-bar.medium { width: 66%; background: #ffc107; }
+        .password-strength-bar.strong { width: 100%; background: #28a745; }
 
         .auth-buttons {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             justify-content: center;
             margin-bottom: 20px;
         }
 
-        /* Simple button styles to match your theme */
         .btn-auth {
             flex: 1;
-            padding: 12px;
+            padding: 14px;
             border: none;
-            border-radius: 6px;
+            border-radius: 10px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.3s;
         }
 
         .btn-login {
             background: #007bff;
             color: white;
+        }
+
+        .btn-login:hover {
+            background: #0056b3;
         }
 
         .btn-signup {
@@ -63,34 +127,225 @@
             color: #007bff;
         }
 
-        .btn-logout {
-            background: #ff4d4d;
+        .btn-signup:hover {
+            background: #007bff;
             color: white;
-            width: 100%;
+        }
+
+        .btn-auth:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        .btn-auth .spinner {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+        }
+
+        .btn-auth.loading .spinner {
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+        }
+
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #eee;
+        }
+
+        .divider span {
+            padding: 0 15px;
+            color: #999;
+            font-size: 13px;
+        }
+
+        .forgot-password {
+            display: block;
             margin-top: 15px;
+            color: #007bff;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 25px;
+            color: #666;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .back-link:hover {
+            color: #333;
+        }
+
+        /* Password Reset Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .modal h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .modal p {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .btn-modal {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            font-size: 14px;
+        }
+
+        .btn-modal-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-modal-secondary {
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+        }
+
+        .toast {
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            margin-bottom: 10px;
+            animation: slideIn 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toast-success { background: #28a745; }
+        .toast-error { background: #dc3545; }
+        .toast-info { background: #17a2b8; }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
     </style>
 </head>
 
 <body>
 
+    <div class="toast-container" id="toastContainer"></div>
+
     <div class="auth-container">
-        <h2>Welcome to Vision Shop</h2>
+        <h2 id="authTitle">Welcome Back</h2>
+        <p class="auth-subtitle" id="authSubtitle">Sign in to your account to continue</p>
 
         <input type="email" id="emailInput" class="auth-input" placeholder="Email Address">
-        <input type="password" id="passwordInput" class="auth-input" placeholder="Password">
+        <div class="error-message" id="emailError">Please enter a valid email address</div>
 
-        <div class="auth-buttons">
-            <button class="btn-auth btn-login" onclick="handleLogin()">Log In</button>
-            <button class="btn-auth btn-signup" onclick="handleSignup()">Sign Up</button>
+        <input type="password" id="passwordInput" class="auth-input" placeholder="Password">
+        <div class="error-message" id="passwordError">Password is required</div>
+
+        <div class="password-strength" id="passwordStrength">
+            <div class="password-strength-bar" id="strengthBar"></div>
         </div>
 
-        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+        <div class="auth-buttons">
+            <button class="btn-auth btn-login" id="loginBtn" onclick="handleLogin()">
+                <span class="spinner"></span>
+                <span id="loginBtnText">Log In</span>
+            </button>
+            <button class="btn-auth btn-signup" id="signupBtn" onclick="handleSignup()">
+                <span class="spinner"></span>
+                <span id="signupBtnText">Sign Up</span>
+            </button>
+        </div>
 
-        <button class="btn-auth btn-logout" onclick="handleLogout()">Log Out (For Testing)</button>
+        <a class="forgot-password" id="forgotPasswordLink" onclick="showPasswordResetModal()">Forgot Password?</a>
 
-        <br><br>
-        <a href="index.html" style="color: #666; text-decoration: none; font-size: 14px;">&larr; Back to Home</a>
+        <div class="divider">
+            <span>OR</span>
+        </div>
+
+        <button class="btn-auth btn-logout" onclick="handleLogout()" style="background: #6c757d; color: white; width: 100%;">
+            <span id="logoutBtnText">Log Out (if already logged in)</span>
+        </button>
+
+        <a href="index.html" class="back-link">&larr; Back to Home</a>
+    </div>
+
+    <!-- Password Reset Modal -->
+    <div class="modal-overlay" id="resetModal">
+        <div class="modal">
+            <h3>Reset Password</h3>
+            <p>Enter your email address and we'll send you a link to reset your password.</p>
+            <input type="email" id="resetEmailInput" class="auth-input" placeholder="Email Address">
+            <div class="modal-buttons">
+                <button class="btn-modal btn-modal-secondary" onclick="closePasswordResetModal()">Cancel</button>
+                <button class="btn-modal btn-modal-primary" onclick="submitPasswordReset()">Send Reset Link</button>
+            </div>
+        </div>
     </div>
 
     <!-- Firebase Scripts -->
@@ -112,39 +367,183 @@
 
         async function redirectAfterAuth(user) {
             const admin = await isAdmin(user.uid);
-            window.location.href = admin ? 'admin.html' : 'index.html';
+            window.location.href = admin ? 'admin.html' : 'my-account.html';
         }
 
         function getInputs() {
             return {
-                email: document.getElementById('emailInput').value,
+                email: document.getElementById('emailInput').value.trim(),
                 password: document.getElementById('passwordInput').value
             };
         }
 
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function validatePassword(password, isSignup = false) {
+            if (isSignup) {
+                if (password.length < 6) return 'Password must be at least 6 characters';
+            }
+            return null;
+        }
+
+        function showError(inputId, errorId, message) {
+            const input = document.getElementById(inputId);
+            const error = document.getElementById(errorId);
+            input.classList.add('error');
+            error.textContent = message;
+            error.classList.add('show');
+        }
+
+        function clearErrors() {
+            ['emailInput', 'passwordInput'].forEach(id => {
+                document.getElementById(id).classList.remove('error');
+            });
+            ['emailError', 'passwordError'].forEach(id => {
+                document.getElementById(id).classList.remove('show');
+            });
+        }
+
+        function setLoading(btnId, loading) {
+            const btn = document.getElementById(btnId);
+            if (loading) {
+                btn.classList.add('loading');
+                btn.disabled = true;
+            } else {
+                btn.classList.remove('loading');
+                btn.disabled = false;
+            }
+        }
+
+        // Password strength indicator
+        document.getElementById('passwordInput').addEventListener('input', function() {
+            const password = this.value;
+            const strengthDiv = document.getElementById('passwordStrength');
+            const strengthBar = document.getElementById('strengthBar');
+            
+            if (password.length === 0) {
+                strengthDiv.classList.remove('show');
+                return;
+            }
+            
+            strengthDiv.classList.add('show');
+            strengthBar.className = 'password-strength-bar';
+            
+            if (password.length < 6) {
+                strengthBar.classList.add('weak');
+            } else if (password.length < 10 || !/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
+                strengthBar.classList.add('medium');
+            } else {
+                strengthBar.classList.add('strong');
+            }
+        });
+
         async function handleLogin() {
             const { email, password } = getInputs();
-            if (!email || !password) return alert("Please enter an email and password.");
+            clearErrors();
+
+            if (!email) {
+                showError('emailInput', 'emailError', 'Please enter your email address');
+                return;
+            }
+            if (!validateEmail(email)) {
+                showError('emailInput', 'emailError', 'Please enter a valid email address');
+                return;
+            }
+            if (!password) {
+                showError('passwordInput', 'passwordError', 'Please enter your password');
+                return;
+            }
+
+            setLoading('loginBtn', true);
             const user = await window.logInUser(email, password);
-            if (user) await redirectAfterAuth(user);
+            setLoading('loginBtn', false);
+
+            if (user) {
+                await redirectAfterAuth(user);
+            }
         }
 
         async function handleSignup() {
             const { email, password } = getInputs();
-            if (!email || !password) return alert("Please enter an email and password.");
-            if (password.length < 6) return alert("Password must be at least 6 characters long.");
+            clearErrors();
+
+            if (!email) {
+                showError('emailInput', 'emailError', 'Please enter your email address');
+                return;
+            }
+            if (!validateEmail(email)) {
+                showError('emailInput', 'emailError', 'Please enter a valid email address');
+                return;
+            }
+
+            const passwordError = validatePassword(password, true);
+            if (passwordError) {
+                showError('passwordInput', 'passwordError', passwordError);
+                return;
+            }
+
+            setLoading('signupBtn', true);
             const user = await window.signUpUser(email, password);
-            if (user) await redirectAfterAuth(user);
+            setLoading('signupBtn', false);
+
+            if (user) {
+                await redirectAfterAuth(user);
+            }
         }
 
         async function handleLogout() {
-            await window.logOutUser();
+            if (window.currentUser) {
+                await window.logOutUser();
+            }
         }
 
-        // Expose functions to global scope (needed since this is type="module")
+        // Password Reset Modal
+        function showPasswordResetModal() {
+            const email = window.currentUser?.email || '';
+            document.getElementById('resetEmailInput').value = email;
+            document.getElementById('resetModal').classList.add('show');
+        }
+
+        function closePasswordResetModal() {
+            document.getElementById('resetModal').classList.remove('show');
+        }
+
+        async function submitPasswordReset() {
+            const email = document.getElementById('resetEmailInput').value.trim();
+            if (!email || !validateEmail(email)) {
+                alert('Please enter a valid email address');
+                return;
+            }
+
+            const btn = document.querySelector('.btn-modal-primary');
+            btn.disabled = true;
+            btn.textContent = 'Sending...';
+
+            const success = await window.resetPassword(email);
+
+            btn.disabled = false;
+            btn.textContent = 'Send Reset Link';
+
+            if (success) {
+                closePasswordResetModal();
+            }
+        }
+
+        // Close modal on outside click
+        document.getElementById('resetModal').addEventListener('click', function(e) {
+            if (e.target === this) closePasswordResetModal();
+        });
+
+        // Expose functions to global scope
         window.handleLogin = handleLogin;
         window.handleSignup = handleSignup;
         window.handleLogout = handleLogout;
+        window.showPasswordResetModal = showPasswordResetModal;
+        window.closePasswordResetModal = closePasswordResetModal;
+        window.submitPasswordReset = submitPasswordReset;
     </script>
 </body>
 

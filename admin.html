@@ -4,8 +4,8 @@
   <base href="/Vision-Books-And-Uniform-/">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard – Visionbooks & Uniform</title>
-  
+  <title>Admin Dashboard – Visionbooks &amp; Uniform</title>
+
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔐</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,43 +17,16 @@
 
   <div class="toast-container" id="toastContainer"></div>
 
-  <!-- Login Screen -->
-  <div id="loginScreen" class="login-screen">
-    <div class="login-box">
-      <div class="login-header">
-        <i class="fas fa-shield-alt"></i>
-        <h1>Admin Login</h1>
-        <p>Visionbooks & Uniform Dashboard</p>
-      </div>
-      <form id="loginForm" onsubmit="handleLogin(event)">
-        <div class="form-group">
-          <label><i class="fas fa-envelope"></i> Email</label>
-          <input type="email" id="loginEmail" placeholder="your-email@example.com" required>
-        </div>
-        <div class="form-group">
-          <label><i class="fas fa-lock"></i> Password</label>
-          <input type="password" id="loginPassword" placeholder="Enter password" required>
-        </div>
-        <button type="submit" class="btn btn-primary btn-block">
-          <i class="fas fa-sign-in-alt"></i> Login
-        </button>
-      </form>
-      <div class="login-footer">
-        <p>Use your Supabase Auth credentials to login.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Admin Dashboard -->
+  <!-- Admin Dashboard (hidden until auth confirmed) -->
   <div id="adminDashboard" style="display: none;">
-    
+
     <!-- Sidebar -->
     <aside class="sidebar">
       <div class="sidebar-header">
         <i class="fas fa-book-open"></i>
         <h2>Visionbooks</h2>
       </div>
-      
+
       <nav class="sidebar-nav">
         <a href="#" class="nav-item active" onclick="showSection('dashboard', event)">
           <i class="fas fa-tachometer-alt"></i> Dashboard
@@ -63,6 +36,9 @@
         </a>
         <a href="#" class="nav-item" onclick="showSection('orders', event)">
           <i class="fas fa-shopping-cart"></i> Orders
+        </a>
+        <a href="#" class="nav-item" onclick="showSection('users', event)">
+          <i class="fas fa-users"></i> Users
         </a>
         <a href="#" class="nav-item" onclick="showSection('settings', event)">
           <i class="fas fa-cog"></i> Settings
@@ -81,24 +57,20 @@
 
     <!-- Main Content -->
     <main class="main-content">
-      
+
       <!-- Header -->
       <header class="content-header">
         <h1 id="sectionTitle">Dashboard</h1>
-        <div class="header-actions">
-          <button class="header-action-btn" id="loginBtn" onclick="window.location.href='login.html'" title="Account">
-            <i class="fas fa-user"></i>
-            <span id="loginBtnText">Login</span>
-          </button>
-          <button class="btn btn-outline" onclick="importProductsToSupabase()">
+        <div class="content-header-actions">
+          <button class="btn btn-outline" onclick="importProductsToFirebase()" title="Upload sample products to Firebase">
             <i class="fas fa-upload"></i> Import Products
           </button>
-          <button class="btn btn-outline" onclick="syncWithSupabase()">
-            <i class="fas fa-sync"></i> Sync Database
+          <button class="btn btn-outline" onclick="syncWithFirebase()" title="Refresh data from Firebase">
+            <i class="fas fa-sync"></i> Refresh
           </button>
-          <div class="user-info">
+          <div class="admin-badge">
             <i class="fas fa-user-shield"></i>
-            <span>Admin</span>
+            <span id="adminEmail">Admin</span>
           </div>
         </div>
       </header>
@@ -150,7 +122,7 @@
             <div id="recentOrdersList"></div>
           </div>
           <div class="dashboard-card">
-            <h3>Low Stock Products</h3>
+            <h3>Low Stock Alert</h3>
             <div id="lowStockList"></div>
           </div>
         </div>
@@ -188,7 +160,33 @@
         </div>
       </section>
 
-      <!-- Orders Section -->
+      <!-- Users Section -->
+      <section id="usersSection" class="content-section" style="display: none;">
+        <div class="section-header">
+          <div class="search-box">
+            <input type="text" id="userSearch" placeholder="Search users..." onkeyup="filterUsers()">
+            <i class="fas fa-search"></i>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>User ID</th>
+                <th>Email</th>
+                <th>Join Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="usersTableBody">
+              <!-- Users loaded by JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
       <section id="ordersSection" class="content-section" style="display: none;">
         <div class="section-header">
           <div class="filter-group">
@@ -226,50 +224,90 @@
 
       <!-- Settings Section -->
       <section id="settingsSection" class="content-section" style="display: none;">
-        <div class="settings-card">
-          <h3><i class="fas fa-store"></i> Store Information</h3>
-          <p>Edit store settings in <code>js/config.js</code></p>
-          <div class="info-grid">
-            <div class="info-item">
-              <label>Store Name:</label>
-              <span id="settingStoreName">-</span>
+        <form id="settingsForm" onsubmit="saveDashboardSettings(event)">
+          <div class="settings-card">
+            <h3><i class="fas fa-store"></i> Store Information</h3>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Store Name</label>
+                <input type="text" id="storeNameInput" required>
+              </div>
+              <div class="form-group">
+                <label>Tagline</label>
+                <input type="text" id="storeTaglineInput">
+              </div>
+              <div class="form-group">
+                <label>Phone Number</label>
+                <input type="text" id="storePhoneInput" required>
+              </div>
+              <div class="form-group">
+                <label>WhatsApp Number</label>
+                <input type="text" id="storeWhatsappInput" required>
+              </div>
+              <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="storeEmailInput" required>
+              </div>
+              <div class="form-group">
+                <label>Address</label>
+                <input type="text" id="storeAddressInput">
+              </div>
             </div>
-            <div class="info-item">
-              <label>Phone:</label>
-              <span id="settingPhone">-</span>
-            </div>
-            <div class="info-item">
-              <label>Email:</label>
-              <span id="settingEmail">-</span>
-            </div>
-            <div class="info-item">
-              <label>WhatsApp:</label>
-              <span id="settingWhatsApp">-</span>
+            <div class="form-group" style="margin-top: 1rem;">
+              <label>Description</label>
+              <textarea id="storeDescriptionInput" rows="3"></textarea>
             </div>
           </div>
-        </div>
 
-        <div class="settings-card">
-          <h3><i class="fas fa-truck"></i> Shipping Settings</h3>
-          <div class="info-grid">
-            <div class="info-item">
-              <label>Free Shipping Threshold:</label>
-              <span id="settingFreeShipping">-</span>
-            </div>
-            <div class="info-item">
-              <label>Delivery Fee:</label>
-              <span id="settingDeliveryFee">-</span>
+          <div class="settings-card">
+            <h3><i class="fas fa-truck"></i> Shipping Settings</h3>
+            <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="form-group">
+                <label>Free Shipping Threshold (Rs)</label>
+                <input type="number" id="freeShippingInput" required>
+              </div>
+              <div class="form-group">
+                <label>Delivery Fee (Rs)</label>
+                <input type="number" id="deliveryFeeInput" required>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="settings-card">
-          <h3><i class="fas fa-database"></i> Database</h3>
-          <p><strong>Supabase URL:</strong> <span id="settingSupabaseUrl">Loading...</span></p>
-          <p><strong>Status:</strong> <span class="badge badge-success">Connected</span></p>
-          <button class="btn btn-primary" onclick="syncWithSupabase()">
-            <i class="fas fa-sync"></i> Sync Now
-          </button>
+          <div class="settings-card">
+            <h3><i class="fas fa-bullhorn"></i> Announcements</h3>
+            <div class="form-group">
+              <label>Marquee Messages (one per line)</label>
+              <textarea id="announcementsInput" rows="4"></textarea>
+            </div>
+          </div>
+
+          <div class="form-actions" style="margin-top: 2rem;">
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save"></i> Save All Settings
+            </button>
+          </div>
+        </form>
+
+        <div class="settings-card" style="margin-top: 2rem; border-top: 1px solid #eee; padding-top: 2rem;">
+          <h3><i class="fas fa-fire"></i> Firebase Connection</h3>
+          <div class="info-grid">
+            <div class="info-item">
+              <label>Project Status:</label>
+              <span class="badge badge-success">Connected</span>
+            </div>
+            <div class="info-item">
+              <label>Admin User:</label>
+              <span id="settingAdminEmail">-</span>
+            </div>
+          </div>
+          <div style="margin-top: 1.5rem; display: flex; gap: 1rem;">
+            <button class="btn btn-outline" onclick="syncWithFirebase()">
+              <i class="fas fa-sync"></i> Refresh Data
+            </button>
+            <button class="btn btn-outline" style="color: var(--danger); border-color: var(--danger);" onclick="handleLogout()">
+              <i class="fas fa-sign-out-alt"></i> Logout Admin
+            </button>
+          </div>
         </div>
       </section>
 
@@ -342,7 +380,7 @@
 
           <div class="form-row">
             <div class="form-group">
-              <label>Rating (1-5)</label>
+              <label>Rating (1–5)</label>
               <input type="number" id="productRating" min="1" max="5" step="0.1" value="4.5">
             </div>
             <div class="form-group">
@@ -386,7 +424,7 @@
     </div>
   </div>
 
-  <!-- Order Modal -->
+  <!-- Order Detail Modal -->
   <div id="orderModal" class="modal">
     <div class="modal-content" style="max-width: 800px;">
       <div class="modal-header">
@@ -400,7 +438,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline" onclick="closeOrderModal()">Close</button>
-        <button type="button" class="btn btn-primary" id="printOrderBtn" onclick="window.print()">
+        <button type="button" class="btn btn-primary" onclick="window.print()">
           <i class="fas fa-print"></i> Print Invoice
         </button>
       </div>
@@ -408,8 +446,6 @@
   </div>
 
   <!-- Scripts -->
-
-  <script src="js/env.js"></script>
   <script src="js/config.js"></script>
   <script src="js/products.js"></script>
   <script type="module" src="js/firebase-client.js"></script>

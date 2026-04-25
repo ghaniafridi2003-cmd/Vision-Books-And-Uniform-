@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <base href="/Vision-Books-And-Uniform-/">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Account – Visionbooks & Uniform</title>
+  <meta name="description" content="Manage your account, view orders, and update your profile.">
+
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👤</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .account-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .account-header {
+      margin-bottom: 40px;
+    }
+
+    .account-header h1 {
+      font-size: 2rem;
+      color: var(--gray-900);
+      margin-bottom: 10px;
+    }
+
+    .account-header p {
+      color: var(--gray-600);
+    }
+
+    .account-grid {
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      gap: 30px;
+    }
+
+    @media (max-width: 768px) {
+      .account-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .account-sidebar {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      height: fit-content;
+    }
+
+    .account-menu {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .account-menu li {
+      margin-bottom: 5px;
+    }
+
+    .account-menu button {
+      width: 100%;
+      padding: 12px 15px;
+      border: none;
+      background: transparent;
+      text-align: left;
+      cursor: pointer;
+      border-radius: 8px;
+      font-size: 15px;
+      color: var(--gray-700);
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .account-menu button:hover {
+      background: var(--gray-100);
+    }
+
+    .account-menu button.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    .account-menu button i {
+      width: 20px;
+    }
+
+    .account-content {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    .account-section {
+      display: none;
+    }
+
+    .account-section.active {
+      display: block;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      color: var(--gray-900);
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid var(--gray-200);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 576px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--gray-700);
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid var(--gray-200);
+      border-radius: 8px;
+      font-size: 15px;
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .form-input:disabled {
+      background: var(--gray-100);
+      cursor: not-allowed;
+    }
+
+    .btn-save {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-save:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-save:disabled {
+      background: var(--gray-400);
+      cursor: not-allowed;
+    }
+
+    .verification-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 15px;
+    }
+
+    .verification-badge.verified {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .verification-badge.unverified {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .orders-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .order-card {
+      border: 2px solid var(--gray-200);
+      border-radius: 12px;
+      padding: 20px;
+      transition: border-color 0.2s;
+    }
+
+    .order-card:hover {
+      border-color: var(--primary);
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .order-id {
+      font-weight: 600;
+      color: var(--gray-900);
+    }
+
+    .order-date {
+      color: var(--gray-600);
+      font-size: 14px;
+    }
+
+    .order-status {
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .order-status.pending {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .order-status.processing {
+      background: #cce5ff;
+      color: #004085;
+    }
+
+    .order-status.shipped {
+      background: #d1ecf1;
+      color: #0c5460;
+    }
+
+    .order-status.delivered {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .order-status.cancelled {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .order-items {
+      border-top: 1px solid var(--gray-200);
+      padding-top: 15px;
+      margin-top: 15px;
+    }
+
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      font-size: 14px;
+    }
+
+    .order-item-name {
+      color: var(--gray-700);
+    }
+
+    .order-item-qty {
+      color: var(--gray-500);
+    }
+
+    .order-item-price {
+      font-weight: 500;
+    }
+
+    .order-total {
+      border-top: 2px solid var(--gray-200);
+      padding-top: 15px;
+      margin-top: 15px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .order-actions {
+      margin-top: 15px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-order {
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-order-primary {
+      background: var(--primary);
+      color: white;
+      border: none;
+    }
+
+    .btn-order-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-order-secondary {
+      background: transparent;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+    }
+
+    .btn-order-secondary:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    .no-orders {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--gray-600);
+    }
+
+    .no-orders i {
+      font-size: 4rem;
+      color: var(--gray-300);
+      margin-bottom: 20px;
+    }
+
+    .no-orders h3 {
+      margin-bottom: 10px;
+      color: var(--gray-700);
+    }
+
+    .settings-section {
+      margin-bottom: 30px;
+    }
+
+    .settings-section h3 {
+      font-size: 1.1rem;
+      margin-bottom: 15px;
+      color: var(--gray-800);
+    }
+
+    .setting-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      border: 2px solid var(--gray-200);
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .setting-info h4 {
+      margin: 0 0 5px 0;
+      font-size: 15px;
+    }
+
+    .setting-info p {
+      margin: 0;
+      font-size: 13px;
+      color: var(--gray-600);
+    }
+
+    .btn-danger {
+      background: #dc3545;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .btn-danger:hover {
+      background: #c82333;
+    }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 8px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 20px;
+      border-radius: 8px;
+      color: white;
+      font-weight: 500;
+      z-index: 10000;
+      animation: slideIn 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .toast-success { background: #28a745; }
+    .toast-error { background: #dc3545; }
+    .toast-info { background: #17a2b8; }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="page-loader" id="pageLoader">
+    <div class="loader-spinner"></div>
+    <span class="loader-text">Loading Account...</span>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Header -->
+  <header class="header" id="mainHeader">
+    <div class="header-main">
+      <div class="container">
+        <a href="index.html" class="logo">
+          <div class="logo-icon"><i class="fas fa-book-open"></i></div>
+          <div class="logo-text">
+            <span class="store-name" id="storeName"></span>
+            <span class="store-tagline" id="storeTagline"></span>
+          </div>
+        </a>
+        <div class="header-actions">
+          <div class="account-dropdown-container">
+            <button class="header-action-btn" id="loginBtn" onclick="window.location.href='login.html'" title="Account">
+              <i class="fas fa-user"></i>
+              <span id="loginBtnText">Login</span>
+            </button>
+            <div class="account-dropdown" id="accountDropdown">
+              <a href="my-account.html"><i class="fas fa-user-circle"></i> My Profile</a>
+              <a href="my-account.html?tab=orders"><i class="fas fa-box"></i> My Orders</a>
+              <a href="my-account.html?tab=settings"><i class="fas fa-cog"></i> Settings</a>
+              <hr>
+              <a href="#" onclick="window.logOutUser(); return false;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+          </div>
+          <button class="header-action-btn" onclick="window.location.href='wishlist.html'">
+            <i class="fas fa-heart"></i>
+            <span>Wishlist</span>
+            <span class="action-badge" id="wishlistBadge">0</span>
+          </button>
+          <button class="header-action-btn" onclick="window.location.href='cart.html'">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Cart</span>
+            <span class="action-badge" id="cartBadge">0</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Account Content -->
+  <div class="account-container">
+    <div class="account-header">
+      <h1>My Account</h1>
+      <p>Welcome back! Manage your profile, view orders, and update your settings.</p>
+    </div>
+
+    <div class="account-grid">
+      <!-- Sidebar -->
+      <div class="account-sidebar">
+        <ul class="account-menu">
+          <li>
+            <button class="active" data-section="profile">
+              <i class="fas fa-user"></i> My Profile
+            </button>
+          </li>
+          <li>
+            <button data-section="orders">
+              <i class="fas fa-box"></i> My Orders
+            </button>
+          </li>
+          <li>
+            <button data-section="settings">
+              <i class="fas fa-cog"></i> Settings
+            </button>
+          </li>
+          <li>
+            <button onclick="handleLogout()">
+              <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Content -->
+      <div class="account-content">
+        <!-- Profile Section -->
+        <div class="account-section active" id="section-profile">
+          <h2 class="section-title">My Profile</h2>
+          
+          <div id="verificationBadge"></div>
+          
+          <form id="profileForm">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input type="email" id="profileEmail" class="form-input" disabled>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Display Name</label>
+                <input type="text" id="profileName" class="form-input" placeholder="Enter your name">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Phone Number</label>
+                <input type="tel" id="profilePhone" class="form-input" placeholder="0325-9711550">
+              </div>
+              <div class="form-group">
+                <label class="form-label">City</label>
+                <input type="text" id="profileCity" class="form-input" placeholder="Karachi">
+              </div>
+              <div class="form-group full-width">
+                <label class="form-label">Address</label>
+                <input type="text" id="profileAddress" class="form-input" placeholder="Full delivery address">
+              </div>
+            </div>
+            <button type="submit" class="btn-save" id="saveProfileBtn">Save Changes</button>
+          </form>
+        </div>
+
+        <!-- Orders Section -->
+        <div class="account-section" id="section-orders">
+          <h2 class="section-title">My Orders</h2>
+          <div id="ordersList" class="orders-list">
+            <div class="no-orders">
+              <i class="fas fa-box-open"></i>
+              <h3>No orders yet</h3>
+              <p>When you place orders, they will appear here.</p>
+              <button class="btn-order btn-order-primary" onclick="window.location.href='products.html'">Start Shopping</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Settings Section -->
+        <div class="account-section" id="section-settings">
+          <h2 class="section-title">Account Settings</h2>
+          
+          <div class="settings-section">
+            <h3>Security</h3>
+            <div class="setting-item">
+              <div class="setting-info">
+                <h4>Password</h4>
+                <p>Change your account password</p>
+              </div>
+              <button class="btn-order btn-order-secondary" onclick="showPasswordReset()">Change Password</button>
+            </div>
+            <div class="setting-item">
+              <div class="setting-info">
+                <h4>Email Verification</h4>
+                <p>Verify your email address to secure your account</p>
+              </div>
+              <button class="btn-order btn-order-secondary" id="verifyEmailBtn" onclick="sendVerificationEmail()">Send Verification</button>
+            </div>
+          </div>
+
+          <div class="settings-section">
+            <h3>Danger Zone</h3>
+            <div class="setting-item">
+              <div class="setting-info">
+                <h4>Delete Account</h4>
+                <p>Permanently delete your account and all associated data</p>
+              </div>
+              <button class="btn-danger" onclick="confirmDeleteAccount()">Delete Account</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase Scripts -->
+  <script type="module" src="js/firebase-client.js"></script>
+  <script type="module" src="js/auth.js"></script>
+
+  <script type="module">
+    // Tab switching
+    document.querySelectorAll('.account-menu button[data-section]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Update active menu item
+        document.querySelectorAll('.account-menu button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        // Show corresponding section
+        const section = btn.dataset.section;
+        document.querySelectorAll('.account-section').forEach(s => s.classList.remove('active'));
+        document.getElementById(`section-${section}`).classList.add('active');
+        
+        // Load data if needed
+        if (section === 'orders') loadOrders();
+      });
+    });
+
+    // Load profile data
+    async function loadProfile() {
+      if (!window.currentUser) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      document.getElementById('profileEmail').value = window.currentUser.email || '';
+
+      // Load profile from Firestore
+      const profile = await window.getUserProfile(window.currentUser.uid);
+      if (profile) {
+        document.getElementById('profileName').value = profile.displayName || '';
+        document.getElementById('profilePhone').value = profile.phone || '';
+        document.getElementById('profileCity').value = profile.city || '';
+        document.getElementById('profileAddress').value = profile.address || '';
+      }
+
+      // Show verification status
+      const badge = document.getElementById('verificationBadge');
+      if (window.currentUser.emailVerified) {
+        badge.innerHTML = '<span class="verification-badge verified"><i class="fas fa-check-circle"></i> Email Verified</span>';
+      } else {
+        badge.innerHTML = '<span class="verification-badge unverified"><i class="fas fa-exclamation-circle"></i> Email Not Verified</span>';
+      }
+    }
+
+    // Save profile
+    document.getElementById('profileForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('saveProfileBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="loading-spinner"></span>Saving...';
+
+      const success = await window.updateUserProfile({
+        displayName: document.getElementById('profileName').value,
+        phone: document.getElementById('profilePhone').value,
+        city: document.getElementById('profileCity').value,
+        address: document.getElementById('profileAddress').value
+      });
+
+      btn.disabled = false;
+      btn.innerHTML = 'Save Changes';
+    });
+
+    // Load orders
+    async function loadOrders() {
+      if (!window.currentUser) return;
+
+      const ordersList = document.getElementById('ordersList');
+      ordersList.innerHTML = '<div class="no-orders"><i class="fas fa-spinner fa-spin"></i><p>Loading orders...</p></div>';
+
+      const orders = await window.getUserOrders(window.currentUser.uid);
+
+      if (orders.length === 0) {
+        ordersList.innerHTML = `
+          <div class="no-orders">
+            <i class="fas fa-box-open"></i>
+            <h3>No orders yet</h3>
+            <p>When you place orders, they will appear here.</p>
+            <button class="btn-order btn-order-primary" onclick="window.location.href='products.html'">Start Shopping</button>
+          </div>
+        `;
+        return;
+      }
+
+      ordersList.innerHTML = orders.map(order => `
+        <div class="order-card">
+          <div class="order-header">
+            <div>
+              <span class="order-id">Order #${order.id.substring(0, 8).toUpperCase()}</span>
+              <span class="order-date">${new Date(order.createdAt).toLocaleDateString('en-PK', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+            </div>
+            <span class="order-status ${order.status || 'pending'}">${(order.status || 'pending').charAt(0).toUpperCase() + (order.status || 'pending').slice(1)}</span>
+          </div>
+          <div class="order-items">
+            ${(order.items || []).map(item => `
+              <div class="order-item">
+                <span class="order-item-name">${item.name || 'Product'} <span class="order-item-qty">x${item.quantity || 1}</span></span>
+                <span class="order-item-price">Rs. ${(item.price || 0) * (item.quantity || 1)}</span>
+              </div>
+            `).join('')}
+          </div>
+          <div class="order-total">
+            <span>Total</span>
+            <span>Rs. ${order.total || 0}</span>
+          </div>
+          <div class="order-actions">
+            <button class="btn-order btn-order-primary" onclick="viewOrderDetail('${order.id}')">View Details</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // View order detail
+    function viewOrderDetail(orderId) {
+      window.location.href = `order-confirmation.html?orderId=${orderId}`;
+    }
+
+    // Password reset
+    function showPasswordReset() {
+      const email = window.currentUser?.email;
+      if (email && confirm(`Send password reset email to ${email}?`)) {
+        window.resetPassword(email);
+      }
+    }
+
+    // Send verification email
+    async function sendVerificationEmail() {
+      const btn = document.getElementById('verifyEmailBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+      
+      await window.sendVerificationEmail();
+      
+      btn.disabled = false;
+      btn.innerHTML = 'Send Verification';
+    }
+
+    // Delete account (placeholder - requires Firebase Auth)
+    function confirmDeleteAccount() {
+      if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+        alert('Account deletion is not available yet. Please contact support.');
+      }
+    }
+
+    // Logout
+    function handleLogout() {
+      window.logOutUser();
+    }
+
+    // Initialize
+    loadProfile();
+  </script>
+</body>
+
+</html>

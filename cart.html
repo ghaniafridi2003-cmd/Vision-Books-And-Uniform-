@@ -42,10 +42,19 @@
           </div>
         </a>
         <div class="header-actions">
-          <button class="header-action-btn" id="loginBtn" onclick="window.location.href='login.html'" title="Account">
-            <i class="fas fa-user"></i>
-            <span id="loginBtnText">Login</span>
-          </button>
+          <div class="account-dropdown-container">
+            <button class="header-action-btn" id="loginBtn" onclick="window.location.href='login.html'" title="Account">
+              <i class="fas fa-user"></i>
+              <span id="loginBtnText">Login</span>
+            </button>
+            <div class="account-dropdown" id="accountDropdown">
+              <a href="my-account.html"><i class="fas fa-user-circle"></i> My Profile</a>
+              <a href="my-account.html?tab=orders"><i class="fas fa-box"></i> My Orders</a>
+              <a href="my-account.html?tab=settings"><i class="fas fa-cog"></i> Settings</a>
+              <hr>
+              <a href="#" onclick="window.logOutUser(); return false;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+          </div>
           <button class="header-action-btn" onclick="window.location.href='wishlist.html'">
             <i class="fas fa-heart"></i>
             <span>Wishlist</span>

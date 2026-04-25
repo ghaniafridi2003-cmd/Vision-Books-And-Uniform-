@@ -84,6 +84,9 @@ function updatePageTitle(category, subcategory, search, sale, isNew) {
     titleEl.textContent = 'All Products';
     descEl.textContent = 'Browse our complete collection';
   }
+
+  // SEO: Update document title
+  document.title = `${titleEl.textContent} – ${CONFIG.store.name}`;
 }
 
 // Load products based on filters
@@ -96,7 +99,7 @@ async function loadProducts(category, subcategory, search, sale, isNew) {
   `).join('');
 
   try {
-    // Load from Supabase first
+    // Load from Firebase first
     let products = await loadAllProducts();
 
     // Apply initial filters from URL
@@ -217,6 +220,9 @@ function sortProducts(sortBy) {
       break;
     case 'price-high':
       sorted.sort((a, b) => b.price - a.price);
+      break;
+    case 'newest':
+      sorted.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
       break;
     case 'name':
       sorted.sort((a, b) => a.name.localeCompare(b.name));
