@@ -323,8 +323,21 @@ const SAMPLE_PRODUCTS = [
 // Global cache for products
 let globalProducts = [];
 
-// Functions to get products
+// Load products: try Firebase first, fall back to sample data
 async function loadAllProducts() {
+  try {
+    if (window.firebaseDb) {
+      const { collection, getDocs } = await import("https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js");
+      const snapshot = await getDocs(collection(window.firebaseDb, "products"));
+      if (!snapshot.empty) {
+        globalProducts = [];
+        snapshot.forEach(doc => globalProducts.push({ id: doc.id, ...doc.data() }));
+        return globalProducts;
+      }
+    }
+  } catch (error) {
+    console.warn('Firebase products fetch failed, using sample data:', error);
+  }
   globalProducts = SAMPLE_PRODUCTS;
   return globalProducts;
 }

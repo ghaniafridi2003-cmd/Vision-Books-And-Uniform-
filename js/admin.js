@@ -3,14 +3,34 @@
  * Visionbooks & Uniform Admin Dashboard
  */
 
-// Firebase Admin Functions
-async function isAdminLoggedIn() {
-  if (!window.firebaseAuth) return false;
+// ── Firebase helpers ──────────────────────────────────────────────────────────
+
+async function _getAuthUser() {
   return new Promise((resolve) => {
+    const { onAuthStateChanged } = window._fbAuth || {};
+    // Use the already-initialised auth from firebase-client.js
+    if (!window.firebaseAuth) return resolve(null);
+    // onAuthStateChanged fires immediately with current state
     import("https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js").then(({ onAuthStateChanged }) => {
-      onAuthStateChanged(window.firebaseAuth, (user) => resolve(!!user));
+      const unsub = onAuthStateChanged(window.firebaseAuth, (user) => {
+        unsub(); // unsubscribe immediately after first call
+        resolve(user);
+      });
     });
   });
+}
+
+async function isAdminLoggedIn() {
+  const user = await _getAuthUser();
+  if (!user) return false;
+  // Check Firestore admins collection
+  try {
+    const { doc, getDoc } = await import("https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js");
+    const snap = await getDoc(doc(window.firebaseDb, 'admins', user.uid));
+    return snap.exists();
+  } catch {
+    return false;
+  }
 }
 
 async function adminLogin(email, password) {
@@ -28,13 +48,14 @@ async function adminLogout() {
   try {
     const { signOut } = await import("https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js");
     await signOut(window.firebaseAuth);
+    window.location.href = 'login.html';
     return true;
   } catch (error) {
     return false;
   }
 }
 
-async function fetchProductsFromSupabase() {
+async function fetchProductsFromFirebase() {
   try {
     const { collection, getDocs } = await import("https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js");
     const snapshot = await getDocs(collection(window.firebaseDb, "products"));
@@ -47,7 +68,10 @@ async function fetchProductsFromSupabase() {
   }
 }
 
-async function fetchOrdersFromSupabase() {
+// Alias for backward compat with calls inside this file
+const fetchProductsFromSupabase = fetchProductsFromFirebase;
+
+async function fetchOrdersFromFirebase() {
   try {
     const { collection, getDocs } = await import("https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js");
     const snapshot = await getDocs(collection(window.firebaseDb, "orders"));
@@ -59,6 +83,8 @@ async function fetchOrdersFromSupabase() {
     return [];
   }
 }
+
+const fetchOrdersFromSupabase = fetchOrdersFromFirebase;
 
 async function upsertProduct(product) {
   const { doc, setDoc } = await import("https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js");
@@ -82,14 +108,14 @@ let allProducts = [];
 let allOrders = [];
 let currentEditingProduct = null;
 
-// Initialize admin dashboard
+// ── Init ──────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async function() {
-  // Check if admin is logged in via Supabase Auth
   if (await isAdminLoggedIn()) {
     showDashboard();
     await loadDashboardData();
   } else {
-    showLogin();
+    // Redirect to login instead of showing the built-in login screen
+    window.location.href = 'login.html';
   }
 });
 
@@ -580,10 +606,10 @@ async function deleteProductById(productId) {
   }
 }
 
-// Sync with Supabase
+// Sync with Firebase
 async function syncWithSupabase() {
   try {
-    showToast('Syncing with database...', 'info');
+    showToast('Syncing with Firebase...', 'info');
     await loadDashboardData();
     showToast('Sync complete!', 'success');
   } catch (error) {
@@ -592,24 +618,21 @@ async function syncWithSupabase() {
   }
 }
 
-// Import local products to Supabase
+// Import sample products to Firebase
 async function importProductsToSupabase() {
-  if (!confirm('This will upload all local products to Supabase. Continue?')) {
+  if (!confirm('This will upload all sample products to Firebase. Continue?')) {
     return;
   }
 
   try {
-    showToast('Importing products to Supabase...', 'info');
-    
-    // Get local products
-    const productsToImport = getAllProducts();
-    
+    showToast('Importing products to Firebase...', 'info');
+    const productsToImport = SAMPLE_PRODUCTS;
+
     if (productsToImport.length === 0) {
       showToast('No products to import', 'warning');
       return;
     }
 
-    // Import each product
     let imported = 0;
     for (const product of productsToImport) {
       try {
@@ -621,8 +644,6 @@ async function importProductsToSupabase() {
     }
 
     showToast(`Successfully imported ${imported}/${productsToImport.length} products!`, 'success');
-    
-    // Reload dashboard
     await loadDashboardData();
   } catch (error) {
     showToast('Import failed. Check console for details.', 'error');
@@ -639,9 +660,9 @@ function loadSettings() {
   document.getElementById('settingFreeShipping').textContent = formatPrice(CONFIG.shipping.freeShippingThreshold);
   document.getElementById('settingDeliveryFee').textContent = formatPrice(CONFIG.shipping.deliveryFee);
   
-  const sbUrl = document.getElementById('settingSupabaseUrl');
-  if (sbUrl) {
-    sbUrl.textContent = window.ENV?.SUPABASE_URL || 'Not Configured';
+  const fbProject = document.getElementById('settingFirebaseProject');
+  if (fbProject) {
+    fbProject.textContent = window.firebaseDb?._databaseId?.projectId || 'Connected';
   }
 }
 

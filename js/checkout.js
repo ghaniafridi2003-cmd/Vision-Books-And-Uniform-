@@ -5,7 +5,7 @@
 
 // Initialize checkout page
 async function initializeCheckout() {
-  // Load products from Supabase into cache
+  // Load products (from Firebase or sample data)
   await loadAllProducts();
 
   const cart = getCart();
