@@ -261,6 +261,13 @@
   <script src="js/wishlist.js"></script>
   <script src="js/utils.js"></script>
   <script src="js/checkout.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('storeName').textContent = CONFIG.store.name;
+      document.getElementById('storeTagline').textContent = CONFIG.store.tagline;
+      document.getElementById('footerCopyright').textContent = CONFIG.store.name;
+    });
+  </script>
 
 </body>
 

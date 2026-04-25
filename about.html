@@ -94,6 +94,9 @@
   <header class="header" id="mainHeader">
     <div class="header-main">
       <div class="container">
+        <button class="hamburger" id="hamburger" aria-label="Open Menu">
+          <span></span><span></span><span></span>
+        </button>
         <a href="index.html" class="logo">
           <div class="logo-icon"><i class="fas fa-book-open"></i></div>
           <div class="logo-text">
@@ -128,6 +131,17 @@
         </div>
       </div>
     </div>
+    <!-- Navigation -->
+    <nav class="nav">
+      <ul class="nav-list">
+        <li class="nav-item"><a href="index.html" class="nav-link"><i class="fas fa-home"></i> Home</a></li>
+        <li class="nav-item"><a href="products.html?cat=books" class="nav-link"><i class="fas fa-book"></i> Books</a></li>
+        <li class="nav-item"><a href="products.html?cat=stationery" class="nav-link"><i class="fas fa-pen"></i> Stationery</a></li>
+        <li class="nav-item"><a href="products.html?cat=gifts" class="nav-link"><i class="fas fa-gift"></i> Gifts</a></li>
+        <li class="nav-item"><a href="products.html?cat=uniforms" class="nav-link"><i class="fas fa-graduation-cap"></i> Uniforms</a></li>
+        <li class="nav-item"><a href="products.html?sale=true" class="nav-link"><i class="fas fa-tags"></i> Sale</a></li>
+      </ul>
+    </nav>
   </header>
 
   <section class="about-hero">
@@ -196,6 +210,11 @@
 
   <script src="js/env.js"></script>
   <script src="js/config.js"></script>
+  <script type="module" src="js/firebase-client.js"></script>
+  <script type="module" src="js/auth.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/wishlist.js"></script>
   <script src="js/utils.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {

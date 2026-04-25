@@ -595,6 +595,68 @@ p {
   justify-content: center;
 }
 
+/* Account Dropdown */
+.account-dropdown-container {
+  position: relative;
+}
+
+.account-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--white);
+  min-width: 220px;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-xl);
+  z-index: var(--z-dropdown);
+  padding: var(--space-sm);
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity var(--transition), transform var(--transition);
+}
+
+.account-dropdown.show {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.account-dropdown a {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: 0.75rem var(--space-md);
+  color: var(--gray-700);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+
+.account-dropdown a:hover {
+  background: var(--gray-100);
+  color: var(--accent);
+}
+
+.account-dropdown a i {
+  font-size: var(--text-base);
+  width: 20px;
+  text-align: center;
+  color: var(--gray-500);
+}
+
+.account-dropdown a:hover i {
+  color: var(--accent);
+}
+
+.account-dropdown hr {
+  border: none;
+  border-top: 1px solid var(--gray-200);
+  margin: var(--space-xs) 0;
+}
+
 /* Cart icon bounce animation */
 .header-action-btn i.bounce {
   animation: bounce 0.5s ease;

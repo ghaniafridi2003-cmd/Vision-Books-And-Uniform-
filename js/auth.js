@@ -90,22 +90,17 @@ onAuthStateChanged(window.firebaseAuth, async (user) => {
         // Update nav button text
         if (loginBtnText) loginBtnText.textContent = admin ? 'Dashboard' : 'Account';
         
-        // Update nav button click - now shows dropdown for regular users
+        // Update nav button click behavior
         if (loginBtn) {
             if (admin) {
                 loginBtn.onclick = () => window.location.href = 'admin.html';
             } else {
-                loginBtn.onclick = null; // Will be handled by dropdown
                 loginBtn.onclick = (e) => {
+                    e.stopPropagation();
                     const dropdown = document.getElementById('accountDropdown');
                     if (dropdown) dropdown.classList.toggle('show');
                 };
             }
-        }
-
-        // Show/hide dropdown based on admin status
-        if (accountDropdown) {
-            accountDropdown.style.display = admin ? 'none' : 'block';
         }
 
         // Cart & Wishlist merge from Firebase into localStorage
@@ -149,8 +144,8 @@ onAuthStateChanged(window.firebaseAuth, async (user) => {
         if (loginBtnText) loginBtnText.textContent = 'Login';
         if (loginBtn) loginBtn.onclick = () => window.location.href = 'login.html';
         
-        // Hide dropdown for non-logged in users
-        if (accountDropdown) accountDropdown.style.display = 'none';
+        // Ensure dropdown is hidden for non-logged in users
+        if (accountDropdown) accountDropdown.classList.remove('show');
     }
 });
 

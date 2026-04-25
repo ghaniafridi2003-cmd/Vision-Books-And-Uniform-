@@ -615,9 +615,15 @@
     </div>
   </div>
 
-  <!-- Firebase Scripts -->
+  <!-- Scripts -->
+  <script src="js/env.js"></script>
+  <script src="js/config.js"></script>
   <script type="module" src="js/firebase-client.js"></script>
   <script type="module" src="js/auth.js"></script>
+  <script src="js/products.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/wishlist.js"></script>
+  <script src="js/utils.js"></script>
 
   <script type="module">
     // Tab switching
@@ -769,7 +775,47 @@
     }
 
     // Initialize
-    loadProfile();
+    // Update config data
+    if (typeof CONFIG !== 'undefined') {
+      const storeNameEl = document.getElementById('storeName');
+      const storeTaglineEl = document.getElementById('storeTagline');
+      if (storeNameEl) storeNameEl.textContent = CONFIG.store.name;
+      if (storeTaglineEl) storeTaglineEl.textContent = CONFIG.store.tagline;
+    }
+
+    // Handle URL tab parameter (e.g., ?tab=orders)
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabParam = urlParams.get('tab');
+    if (tabParam) {
+      const targetBtn = document.querySelector(`.account-menu button[data-section="${tabParam}"]`);
+      if (targetBtn) {
+        // Update active menu item
+        document.querySelectorAll('.account-menu button').forEach(b => b.classList.remove('active'));
+        targetBtn.classList.add('active');
+        // Show corresponding section
+        document.querySelectorAll('.account-section').forEach(s => s.classList.remove('active'));
+        const section = document.getElementById(`section-${tabParam}`);
+        if (section) section.classList.add('active');
+        // Load data if needed
+        if (tabParam === 'orders') loadOrders();
+      }
+    }
+
+    // Wait for auth to initialize before loading profile
+    // Auth module loads asynchronously, so we poll for currentUser
+    function waitForAuth() {
+      if (window.currentUser) {
+        loadProfile();
+      } else if (window.firebaseAuth) {
+        // Auth is initialized but user not yet determined
+        setTimeout(waitForAuth, 200);
+      } else {
+        // Firebase not yet initialized, wait longer
+        setTimeout(waitForAuth, 500);
+      }
+    }
+    // Start with a short delay to let modules load
+    setTimeout(waitForAuth, 300);
   </script>
 </body>
 

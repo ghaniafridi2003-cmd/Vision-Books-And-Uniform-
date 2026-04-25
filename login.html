@@ -2,33 +2,82 @@
 <html lang="en">
 
 <head>
+    <base href="/Vision-Books-And-Uniform-/">
     <meta charset="UTF-8">
-    <title>Login / Sign Up - Vision Shop</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Sign Up – Visionbooks & Uniform</title>
+    <meta name="description" content="Sign in or create an account at Visionbooks & Uniform to manage your orders, wishlist, and profile.">
+
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
     <style>
         body {
-            background-color: #f9f9f9;
+            background: linear-gradient(135deg, #1a3c5e 0%, #0d1b2a 50%, #1a3c5e 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 20px;
+        }
+
+        .auth-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 24px;
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .auth-logo {
+            text-align: center;
+            color: white;
+        }
+
+        .auth-logo .logo-icon-large {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #d4893f, #e6a55a);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            font-size: 1.8rem;
+            color: white;
+        }
+
+        .auth-logo h1 {
+            font-size: 1.5rem;
+            color: white;
+            margin: 0 0 4px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .auth-logo p {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+            margin: 0;
         }
 
         .auth-container {
-            max-width: 420px;
             width: 100%;
-            margin: 20px;
             padding: 40px;
             background: white;
-            border-radius: 16px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             text-align: center;
         }
 
         .auth-container h2 {
-            margin-bottom: 10px;
-            color: #333;
-            font-size: 1.8rem;
+            margin-bottom: 8px;
+            color: #1a3c5e;
+            font-size: 1.7rem;
+            font-family: 'Poppins', sans-serif;
         }
 
         .auth-subtitle {
@@ -42,15 +91,17 @@
             padding: 14px 16px;
             margin-bottom: 15px;
             border: 2px solid #e5e5e5;
-            border-radius: 10px;
+            border-radius: 12px;
             font-size: 15px;
             box-sizing: border-box;
-            transition: border-color 0.3s;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            font-family: 'Poppins', sans-serif;
         }
 
         .auth-input:focus {
             outline: none;
-            border-color: #007bff;
+            border-color: #1a3c5e;
+            box-shadow: 0 0 0 4px rgba(26, 60, 94, 0.1);
         }
 
         .auth-input.error {
@@ -105,36 +156,45 @@
             flex: 1;
             padding: 14px;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
             font-weight: 600;
             font-size: 15px;
             transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .btn-login {
-            background: #007bff;
+            background: linear-gradient(135deg, #1a3c5e, #2a5a8c);
             color: white;
         }
 
         .btn-login:hover {
-            background: #0056b3;
+            background: linear-gradient(135deg, #15324f, #1e4670);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(26, 60, 94, 0.3);
         }
 
         .btn-signup {
             background: transparent;
-            border: 2px solid #007bff;
-            color: #007bff;
+            border: 2px solid #1a3c5e;
+            color: #1a3c5e;
         }
 
         .btn-signup:hover {
-            background: #007bff;
+            background: #1a3c5e;
             color: white;
+            transform: translateY(-2px);
         }
 
         .btn-auth:disabled {
             opacity: 0.7;
             cursor: not-allowed;
+            transform: none !important;
         }
 
         .btn-auth .spinner {
@@ -145,7 +205,6 @@
             border-radius: 50%;
             border-top-color: white;
             animation: spin 1s linear infinite;
-            margin-right: 8px;
         }
 
         .btn-auth.loading .spinner {
@@ -177,26 +236,48 @@
         .forgot-password {
             display: block;
             margin-top: 15px;
-            color: #007bff;
+            color: #1a3c5e;
             text-decoration: none;
             font-size: 14px;
             cursor: pointer;
+            transition: color 0.2s;
         }
 
         .forgot-password:hover {
+            color: #d4893f;
             text-decoration: underline;
         }
 
         .back-link {
-            display: inline-block;
-            margin-top: 25px;
-            color: #666;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: rgba(255,255,255,0.7);
             text-decoration: none;
             font-size: 14px;
+            transition: color 0.2s;
         }
 
         .back-link:hover {
-            color: #333;
+            color: white;
+        }
+
+        .btn-logout-link {
+            background: none;
+            border: 2px solid #e5e5e5;
+            color: #666;
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .btn-logout-link:hover {
+            border-color: #dc3545;
+            color: #dc3545;
         }
 
         /* Password Reset Modal */
@@ -207,10 +288,11 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.6);
             z-index: 1000;
             align-items: center;
             justify-content: center;
+            backdrop-filter: blur(4px);
         }
 
         .modal-overlay.show {
@@ -220,15 +302,17 @@
         .modal {
             background: white;
             padding: 30px;
-            border-radius: 16px;
-            max-width: 400px;
+            border-radius: 20px;
+            max-width: 420px;
             width: 90%;
             text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
 
         .modal h3 {
             margin-bottom: 15px;
-            color: #333;
+            color: #1a3c5e;
+            font-family: 'Poppins', sans-serif;
         }
 
         .modal p {
@@ -245,16 +329,22 @@
 
         .btn-modal {
             padding: 12px 24px;
-            border-radius: 8px;
+            border-radius: 10px;
             font-weight: 600;
             cursor: pointer;
             border: none;
             font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.2s;
         }
 
         .btn-modal-primary {
-            background: #007bff;
+            background: linear-gradient(135deg, #1a3c5e, #2a5a8c);
             color: white;
+        }
+
+        .btn-modal-primary:hover {
+            transform: translateY(-1px);
         }
 
         .btn-modal-secondary {
@@ -262,7 +352,11 @@
             color: #333;
         }
 
-        /* Toast */
+        .btn-modal-secondary:hover {
+            background: #e5e5e5;
+        }
+
+        /* Toast - login page specific override */
         .toast-container {
             position: fixed;
             top: 20px;
@@ -272,7 +366,7 @@
 
         .toast {
             padding: 15px 20px;
-            border-radius: 8px;
+            border-radius: 12px;
             color: white;
             font-weight: 500;
             margin-bottom: 10px;
@@ -280,6 +374,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            font-family: 'Poppins', sans-serif;
         }
 
         .toast-success { background: #28a745; }
@@ -290,6 +385,15 @@
             from { transform: translateX(100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
         }
+
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 30px 24px;
+            }
+            .auth-buttons {
+                flex-direction: column;
+            }
+        }
     </style>
 </head>
 
@@ -297,42 +401,52 @@
 
     <div class="toast-container" id="toastContainer"></div>
 
-    <div class="auth-container">
-        <h2 id="authTitle">Welcome Back</h2>
-        <p class="auth-subtitle" id="authSubtitle">Sign in to your account to continue</p>
-
-        <input type="email" id="emailInput" class="auth-input" placeholder="Email Address">
-        <div class="error-message" id="emailError">Please enter a valid email address</div>
-
-        <input type="password" id="passwordInput" class="auth-input" placeholder="Password">
-        <div class="error-message" id="passwordError">Password is required</div>
-
-        <div class="password-strength" id="passwordStrength">
-            <div class="password-strength-bar" id="strengthBar"></div>
+    <div class="auth-wrapper">
+        <div class="auth-logo">
+            <div class="logo-icon-large"><i class="fas fa-book-open"></i></div>
+            <h1>Visionbooks & Uniform</h1>
+            <p>Books · Stationery · Gifts · Uniforms</p>
         </div>
 
-        <div class="auth-buttons">
-            <button class="btn-auth btn-login" id="loginBtn" onclick="handleLogin()">
-                <span class="spinner"></span>
-                <span id="loginBtnText">Log In</span>
+        <div class="auth-container">
+            <h2 id="authTitle">Welcome Back</h2>
+            <p class="auth-subtitle" id="authSubtitle">Sign in to your account to continue</p>
+
+            <input type="email" id="emailInput" class="auth-input" placeholder="Email Address">
+            <div class="error-message" id="emailError">Please enter a valid email address</div>
+
+            <input type="password" id="passwordInput" class="auth-input" placeholder="Password">
+            <div class="error-message" id="passwordError">Password is required</div>
+
+            <div class="password-strength" id="passwordStrength">
+                <div class="password-strength-bar" id="strengthBar"></div>
+            </div>
+
+            <div class="auth-buttons">
+                <button class="btn-auth btn-login" id="authLoginBtn" onclick="handleLogin()">
+                    <span class="spinner"></span>
+                    <span id="authLoginBtnText">Log In</span>
+                </button>
+                <button class="btn-auth btn-signup" id="authSignupBtn" onclick="handleSignup()">
+                    <span class="spinner"></span>
+                    <span id="authSignupBtnText">Sign Up</span>
+                </button>
+            </div>
+
+            <a class="forgot-password" id="forgotPasswordLink" onclick="showPasswordResetModal()">Forgot Password?</a>
+
+            <div class="divider">
+                <span>OR</span>
+            </div>
+
+            <button class="btn-logout-link" onclick="handleLogout()">
+                <i class="fas fa-sign-out-alt"></i> Log Out (if already logged in)
             </button>
-            <button class="btn-auth btn-signup" id="signupBtn" onclick="handleSignup()">
-                <span class="spinner"></span>
-                <span id="signupBtnText">Sign Up</span>
-            </button>
         </div>
 
-        <a class="forgot-password" id="forgotPasswordLink" onclick="showPasswordResetModal()">Forgot Password?</a>
-
-        <div class="divider">
-            <span>OR</span>
-        </div>
-
-        <button class="btn-auth btn-logout" onclick="handleLogout()" style="background: #6c757d; color: white; width: 100%;">
-            <span id="logoutBtnText">Log Out (if already logged in)</span>
-        </button>
-
-        <a href="index.html" class="back-link">&larr; Back to Home</a>
+        <a href="index.html" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
     </div>
 
     <!-- Password Reset Modal -->
@@ -457,9 +571,9 @@
                 return;
             }
 
-            setLoading('loginBtn', true);
+            setLoading('authLoginBtn', true);
             const user = await window.logInUser(email, password);
-            setLoading('loginBtn', false);
+            setLoading('authLoginBtn', false);
 
             if (user) {
                 await redirectAfterAuth(user);
@@ -485,9 +599,9 @@
                 return;
             }
 
-            setLoading('signupBtn', true);
+            setLoading('authSignupBtn', true);
             const user = await window.signUpUser(email, password);
-            setLoading('signupBtn', false);
+            setLoading('authSignupBtn', false);
 
             if (user) {
                 await redirectAfterAuth(user);
@@ -544,6 +658,24 @@
         window.showPasswordResetModal = showPasswordResetModal;
         window.closePasswordResetModal = closePasswordResetModal;
         window.submitPasswordReset = submitPasswordReset;
+
+        // Toast function for login page (since utils.js is not loaded here)
+        if (typeof showToast === 'undefined') {
+            window.showToast = function(message, type = 'info', duration = 3000) {
+                const container = document.getElementById('toastContainer');
+                const toast = document.createElement('div');
+                toast.className = `toast toast-${type}`;
+                const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', warning: 'fa-exclamation-triangle', info: 'fa-info-circle' };
+                toast.innerHTML = `<i class="fas ${icons[type] || icons.info}"></i><span>${message}</span>`;
+                container.appendChild(toast);
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateX(100%)';
+                    toast.style.transition = 'all 0.3s';
+                    setTimeout(() => toast.remove(), 300);
+                }, duration);
+            };
+        }
     </script>
 </body>
 

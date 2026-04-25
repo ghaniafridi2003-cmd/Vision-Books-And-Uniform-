@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   document.getElementById('footerCopyright').textContent = CONFIG.store.name;
   document.getElementById('whatsappFloatBtn').href = CONFIG.social.whatsapp;
 
-  // Load products from Supabase
+  // Load products from Firebase
   await loadAllProducts();
 
   // Render cart

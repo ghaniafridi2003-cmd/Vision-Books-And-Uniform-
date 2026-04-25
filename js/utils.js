@@ -78,6 +78,21 @@ document.addEventListener('DOMContentLoaded', function() {
         backToTop.classList.remove('show');
       }
     });
+
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
+  // Account dropdown - close when clicking outside
+  const accountDropdown = document.getElementById('accountDropdown');
+  if (accountDropdown) {
+    document.addEventListener('click', (e) => {
+      const container = e.target.closest('.account-dropdown-container');
+      if (!container) {
+        accountDropdown.classList.remove('show');
+      }
+    });
   }
 
   // Sticky header on scroll
