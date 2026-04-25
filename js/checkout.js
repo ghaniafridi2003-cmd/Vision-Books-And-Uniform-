@@ -210,10 +210,16 @@ async function submitCheckout(event) {
       // Save order locally
       saveOrder(order);
 
-      // If Supabase is available, save there too
-      if (typeof createOrderInSupabase === 'function') {
-        createOrderInSupabase(order).catch(err => {
-          console.warn('Supabase save failed, order saved locally', err);
+      // If Firebase is available, save there too
+      if (window.firebaseDb) {
+        import("https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js").then(({ doc, setDoc }) => {
+          // Add user_id if logged in
+          if (window.currentUser) {
+            order.user_id = window.currentUser.uid;
+          }
+          // Use the order.id as the document ID
+          const orderRef = doc(window.firebaseDb, "orders", order.id);
+          setDoc(orderRef, order).catch(err => console.error("Firebase order save failed:", err));
         });
       }
 

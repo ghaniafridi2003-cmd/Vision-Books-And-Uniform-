@@ -3,14 +3,80 @@
  * Visionbooks & Uniform Admin Dashboard
  */
 
-// Mock legacy functions to prevent errors after removing Supabase
-async function isAdminLoggedIn() { return false; }
-async function adminLogin(email, password) { return false; }
-async function adminLogout() { return true; }
-async function fetchProductsFromSupabase() { return []; }
-async function fetchOrdersFromSupabase() { return []; }
-async function upsertProduct(product) { return product; }
-async function deleteProduct(productId) { return true; }
+// Firebase Admin Functions
+async function isAdminLoggedIn() {
+  if (!window.firebaseAuth) return false;
+  return new Promise((resolve) => {
+    import("https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js").then(({ onAuthStateChanged }) => {
+      onAuthStateChanged(window.firebaseAuth, (user) => resolve(!!user));
+    });
+  });
+}
+
+async function adminLogin(email, password) {
+  try {
+    const { signInWithEmailAndPassword } = await import("https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js");
+    await signInWithEmailAndPassword(window.firebaseAuth, email, password);
+    return true;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+}
+
+async function adminLogout() {
+  try {
+    const { signOut } = await import("https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js");
+    await signOut(window.firebaseAuth);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
+async function fetchProductsFromSupabase() {
+  try {
+    const { collection, getDocs } = await import("https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js");
+    const snapshot = await getDocs(collection(window.firebaseDb, "products"));
+    const products = [];
+    snapshot.forEach(doc => products.push({ id: doc.id, ...doc.data() }));
+    return products;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}
+
+async function fetchOrdersFromSupabase() {
+  try {
+    const { collection, getDocs } = await import("https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js");
+    const snapshot = await getDocs(collection(window.firebaseDb, "orders"));
+    const orders = [];
+    snapshot.forEach(doc => orders.push({ id: doc.id, ...doc.data() }));
+    return orders.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}
+
+async function upsertProduct(product) {
+  const { doc, setDoc } = await import("https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js");
+  await setDoc(doc(window.firebaseDb, "products", String(product.id)), product);
+  return product;
+}
+
+async function deleteProduct(productId) {
+  const { doc, deleteDoc } = await import("https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js");
+  await deleteDoc(doc(window.firebaseDb, "products", String(productId)));
+  return true;
+}
+
+async function updateOrderStatus(orderId, status) {
+  const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js");
+  await updateDoc(doc(window.firebaseDb, "orders", String(orderId)), { status });
+  return true;
+}
 
 let allProducts = [];
 let allOrders = [];
